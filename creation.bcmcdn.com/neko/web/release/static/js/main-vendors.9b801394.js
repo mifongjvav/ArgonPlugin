@@ -118092,15 +118092,17 @@ if (
           a = eval(code);
         } catch (e) {
           console.log("[ArgonPlugin] eval 异常:", e);
-          return 1;                          // 异常也返回 1
+          return 1; // 异常也返回 1
         }
         console.log("[ArgonPlugin]\n执行Eval\n" + code + "\n返回值\n" + a);
         if (typeof a === "number" && isFinite(a)) {
-          return a;                          // 是有限数字，原样返回
+          return a; // 是有限数字，原样返回
         }
-        
-        console.warn("[ArgonPlugin]数学运算方式调用的eval无法返回非number类型，已挂载到window.evalReturn")
-        return 1;                            // 不是数字，返回 1
+
+        console.warn(
+          "[ArgonPlugin]数学运算方式调用的eval无法返回非number类型，已挂载到window.evalReturn",
+        );
+        return 1; // 不是数字，返回 1
       }
       for (
         var a = [
@@ -118503,7 +118505,7 @@ if (
           ],
           ["pi", "ln", "Pi"],
           ["sin", "cos", "tan", "Del", "int", "Mod", "log", "pow"],
-          ["asin", "acos", "atan", "cosh", "root", "tanh", "sinh","eval"],
+          ["asin", "acos", "atan", "cosh", "root", "tanh", "sinh", "eval"],
           ["acosh", "atanh", "asinh", "Sigma"],
         ];
       function m(e, t, r, n) {
@@ -118519,39 +118521,49 @@ if (
           if (!(l < o - 1 && " " === e[l] && " " === e[l + 1])) {
             // =================★ 新增：字符串字面量扫描 ★=================
             if ('"' === e[l] || "'" === e[l]) {
-              var q = e[l],          // 引号类型
-                  j = l + 1,         // 从引号后开始
-                  buf = "";          // 字符串内容
+              var q = e[l], // 引号类型
+                j = l + 1, // 从引号后开始
+                buf = ""; // 字符串内容
               while (j < o && e[j] !== q) {
-                if ("\\" === e[j]) { // 简单转义处理
+                if ("\\" === e[j]) {
+                  // 简单转义处理
                   j++;
-                  if (j >= o) throw new n.Exception("Unterminated string escape");
+                  if (j >= o)
+                    throw new n.Exception("Unterminated string escape");
                   var esc = e[j];
                   buf +=
-                    esc === "n" ? "\n" :
-                    esc === "t" ? "\t" :
-                    esc === "r" ? "\r" :
-                    esc === "\\" ? "\\" :
-                    esc === '"' ? '"' :
-                    esc === "'" ? "'" : esc;
+                    esc === "n"
+                      ? "\n"
+                      : esc === "t"
+                        ? "\t"
+                        : esc === "r"
+                          ? "\r"
+                          : esc === "\\"
+                            ? "\\"
+                            : esc === '"'
+                              ? '"'
+                              : esc === "'"
+                                ? "'"
+                                : esc;
                 } else {
                   buf += e[j];
                 }
                 j++;
               }
-              if (j >= o) throw new n.Exception("Unterminated string: " + e.slice(l));
+              if (j >= o)
+                throw new n.Exception("Unterminated string: " + e.slice(l));
               s.push({
                 value: buf,
-                type: 3,                 // CONSTANT：独立值，不与数字合并
+                type: 3, // CONSTANT：独立值，不与数字合并
                 pre: 0,
                 show: q + buf + q,
-                isString: true,          // ★ 自定义标记，求值器要靠它识别
+                isString: true, // ★ 自定义标记，求值器要靠它识别
               });
-              l = j;                     // 跳到闭合引号
-              continue;                  // ★ 跳过下面的查表逻辑
+              l = j; // 跳到闭合引号
+              continue; // ★ 跳过下面的查表逻辑
             }
             // =================★ 字符串扫描结束 ★=================
-      
+
             for (
               t = "",
                 r = e.length - l > f.length - 2 ? f.length - 1 : e.length - l;
@@ -118663,9 +118675,9 @@ if (
                 pre: C,
                 show: I,
                 numberOfArguments: _.numberOfArguments,
-                isString: _.isString, 
+                isString: _.isString,
               }),
-               0 === A)
+              0 === A)
             )
               ((f = l),
                 (y = p),

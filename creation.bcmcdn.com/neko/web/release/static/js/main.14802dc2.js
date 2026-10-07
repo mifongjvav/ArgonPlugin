@@ -108952,6 +108952,13 @@
                     console.log(
                       `[ArgonPlugin]排序耗时：${(end - start).toFixed(2)} ms`,
                     );
+                    console.log("[ArgonPlugin]Debug：" + typeof s);
+                  } else if (typeof c === "number") {
+                    console.log("[ArgonPlugin]触发插入列表：" + c + "");
+                    for (let index = 0; index < c; index++) {
+                      s.push(0);
+                    }
+                    o(n, s);
                   } else {
                     if (h && M) {
                       var f = p(
@@ -189141,7 +189148,8 @@
                 case "audio":
                   return {
                     name: "file",
-                    accept: "audio/mpeg,audio/wav",
+                    accept:
+                      "audio/mpeg,audio/wav,audio/ogg,audio/opus,audio/webm,audio/mp4,audio/aac,audio/flac",
                     multiple: !0,
                     fileList: [],
                     beforeUpload: function (e, t) {
