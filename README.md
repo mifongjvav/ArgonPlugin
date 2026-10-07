@@ -23,6 +23,7 @@ git clone https://github.com/mifongjvav/ArgonPlugin.git
 - 略微提升一步执行速度
 - 修复数学运算的tanh
 - 移除音频导入限制
+- Linux 不会在创作环境检测中显示为不支持的操作系统
 
 ### 功能
 
