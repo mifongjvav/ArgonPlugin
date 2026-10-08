@@ -1,4 +1,2383 @@
 (function () {
+  // ==UserScript==
+// @name         CUELoader
+// @namespace    http://tampermonkey.net/
+// @version      preview
+// @description  我去，啥鱼没写介绍
+// @author       Inventocode
+// @match        https://kitten.codemao.cn*
+// @match        https://kitten4.codemao.cn*
+// @match        https://kn.codemao.cn/editor*
+// @match        https://player.codemao.cn/old/*
+// @match        https://player.codemao.cn/new/*
+// @match        https://kn.codemao.cn/player*
+// @match        https://kn.codemao.cn/view*
+// @grant        none
+// ==/UserScript==
+
+/**
+ * js-base64
+ * Copyright (c) 2014, Dan Kogai All rights reserved.
+ * Licensed under BSD-3-Clause.
+ */
+// prettier-ignore
+!function (t, n) { var r, e; "object" == typeof exports && "undefined" != typeof module ? module.exports = n() : "function" == typeof define && define.amd ? define(n) : (r = t.Base64, (e = n()).noConflict = function () { return t.Base64 = r, e; }, t.Meteor && (Base64 = e), t.Base64 = e); }("undefined" != typeof self ? self : "undefined" != typeof window ? window : "undefined" != typeof global ? global : this, (function () { "use strict"; var t, n = "3.7.8", r = n, e = "function" == typeof Buffer, o = "function" == typeof TextDecoder ? new TextDecoder : void 0, u = "function" == typeof TextEncoder ? new TextEncoder : void 0, i = Array.prototype.slice.call("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="), f = (t = {}, i.forEach((function (n, r) { return t[n] = r; })), t), c = /^(?:[A-Za-z\d+\/]{4})*?(?:[A-Za-z\d+\/]{2}(?:==)?|[A-Za-z\d+\/]{3}=?)?$/, a = String.fromCharCode.bind(String), d = "function" == typeof Uint8Array.from ? Uint8Array.from.bind(Uint8Array) : function (t) { return new Uint8Array(Array.prototype.slice.call(t, 0)); }, s = function (t) { return t.replace(/=/g, "").replace(/[+\/]/g, (function (t) { return "+" == t ? "-" : "_"; })); }, l = function (t) { return t.replace(/[^A-Za-z0-9\+\/]/g, ""); }, h = function (t) { for (var n, r, e, o, u = "", f = t.length % 3, c = 0; c < t.length;) { if ((r = t.charCodeAt(c++)) > 255 || (e = t.charCodeAt(c++)) > 255 || (o = t.charCodeAt(c++)) > 255) throw new TypeError("invalid character found"); u += i[(n = r << 16 | e << 8 | o) >> 18 & 63] + i[n >> 12 & 63] + i[n >> 6 & 63] + i[63 & n]; } return f ? u.slice(0, f - 3) + "===".substring(f) : u; }, p = "function" == typeof btoa ? function (t) { return btoa(t); } : e ? function (t) { return Buffer.from(t, "binary").toString("base64"); } : h, y = e ? function (t) { return Buffer.from(t).toString("base64"); } : function (t) { for (var n = [], r = 0, e = t.length; r < e; r += 4096)n.push(a.apply(null, t.subarray(r, r + 4096))); return p(n.join("")); }, A = function (t, n) { return void 0 === n && (n = !1), n ? s(y(t)) : y(t); }, b = function (t) { if (t.length < 2) return (n = t.charCodeAt(0)) < 128 ? t : n < 2048 ? a(192 | n >>> 6) + a(128 | 63 & n) : a(224 | n >>> 12 & 15) + a(128 | n >>> 6 & 63) + a(128 | 63 & n); var n = 65536 + 1024 * (t.charCodeAt(0) - 55296) + (t.charCodeAt(1) - 56320); return a(240 | n >>> 18 & 7) + a(128 | n >>> 12 & 63) + a(128 | n >>> 6 & 63) + a(128 | 63 & n); }, g = /[\uD800-\uDBFF][\uDC00-\uDFFFF]|[^\x00-\x7F]/g, B = function (t) { return t.replace(g, b); }, x = e ? function (t) { return Buffer.from(t, "utf8").toString("base64"); } : u ? function (t) { return y(u.encode(t)); } : function (t) { return p(B(t)); }, C = function (t, n) { return void 0 === n && (n = !1), n ? s(x(t)) : x(t); }, m = function (t) { return C(t, !0); }, v = /[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF7][\x80-\xBF]{3}/g, U = function (t) { switch (t.length) { case 4: var n = ((7 & t.charCodeAt(0)) << 18 | (63 & t.charCodeAt(1)) << 12 | (63 & t.charCodeAt(2)) << 6 | 63 & t.charCodeAt(3)) - 65536; return a(55296 + (n >>> 10)) + a(56320 + (1023 & n)); case 3: return a((15 & t.charCodeAt(0)) << 12 | (63 & t.charCodeAt(1)) << 6 | 63 & t.charCodeAt(2)); default: return a((31 & t.charCodeAt(0)) << 6 | 63 & t.charCodeAt(1)); } }, F = function (t) { return t.replace(v, U); }, w = function (t) { if (t = t.replace(/\s+/g, ""), !c.test(t)) throw new TypeError("malformed base64."); var n, r, e; t += "==".slice(2 - (3 & t.length)); for (var o = [], u = 0; u < t.length;)n = f[t.charAt(u++)] << 18 | f[t.charAt(u++)] << 12 | (r = f[t.charAt(u++)]) << 6 | (e = f[t.charAt(u++)]), 64 === r ? o.push(a(n >> 16 & 255)) : 64 === e ? o.push(a(n >> 16 & 255, n >> 8 & 255)) : o.push(a(n >> 16 & 255, n >> 8 & 255, 255 & n)); return o.join(""); }, S = "function" == typeof atob ? function (t) { return atob(l(t)); } : e ? function (t) { return Buffer.from(t, "base64").toString("binary"); } : w, E = e ? function (t) { return d(Buffer.from(t, "base64")); } : function (t) { return d(S(t).split("").map((function (t) { return t.charCodeAt(0); }))); }, D = function (t) { return E(j(t)); }, R = e ? function (t) { return Buffer.from(t, "base64").toString("utf8"); } : o ? function (t) { return o.decode(E(t)); } : function (t) { return F(S(t)); }, j = function (t) { return l(t.replace(/[-_]/g, (function (t) { return "-" == t ? "+" : "/"; }))); }, z = function (t) { return R(j(t)); }, T = function (t) { return { value: t, enumerable: !1, writable: !0, configurable: !0 }; }, Z = function () { var t = function (t, n) { return Object.defineProperty(String.prototype, t, T(n)); }; t("fromBase64", (function () { return z(this); })), t("toBase64", (function (t) { return C(this, t); })), t("toBase64URI", (function () { return C(this, !0); })), t("toBase64URL", (function () { return C(this, !0); })), t("toUint8Array", (function () { return D(this); })); }, I = function () { var t = function (t, n) { return Object.defineProperty(Uint8Array.prototype, t, T(n)); }; t("toBase64", (function (t) { return A(this, t); })), t("toBase64URI", (function () { return A(this, !0); })), t("toBase64URL", (function () { return A(this, !0); })); }, O = { version: n, VERSION: r, atob: S, atobPolyfill: w, btoa: p, btoaPolyfill: h, fromBase64: z, toBase64: C, encode: C, encodeURI: m, encodeURL: m, utob: B, btou: F, decode: z, isValid: function (t) { if ("string" != typeof t) return !1; var n = t.replace(/\s+/g, "").replace(/={0,2}$/, ""); return !/[^\s0-9a-zA-Z\+/]/.test(n) || !/[^\s0-9a-zA-Z\-_]/.test(n); }, fromUint8Array: A, toUint8Array: D, extendString: Z, extendUint8Array: I, extendBuiltins: function () { Z(), I(); }, Base64: {} }; return Object.keys(O).forEach((function (t) { return O.Base64[t] = O[t]; })), O; }));
+
+/**
+ * CUELoader - 编程猫通用扩展加载器
+ */
+
+(function () {
+  "use strict";
+
+  /** 脚本名称 */
+  const SCRIPT_NAME = "CUEL";
+
+  console.log(
+    `%cWelcome to ❤ ${SCRIPT_NAME} - Preview Ver ❤ o(*￣▽￣*)ブ`,
+    "color:#ea80fc;",
+  );
+
+  // ==================== 全局变量 ====================
+
+  // #region 全局变量
+
+  const e = {
+    k3: "kitten",
+    k4: "kitten4",
+    kn: "kn",
+    knp: "kn-p",
+    bn: "bn",
+  };
+
+  /**
+   * 环境
+   * @type {e.k3| 'kitten-p' | e.k4 | 'kitten4-p' | e.kn | e.knP | e.bn}
+   */
+  let env = (() => {
+    // META覆盖
+    const meta = document.querySelector("meta[name=env]");
+    if (meta) return meta.getAttribute("content");
+    // BN
+    try {
+      if (BetterNemoVersion) return e.bn;
+    } catch (e) {}
+    // KN Player
+    if (
+      location.host.split(".")[0] === e.kn &&
+      location.pathname.startsWith("/player")
+    )
+      return e.knp;
+    // CUE Player - KN
+    if (location.hostname === "cue-p.pages.dev") return e.knp;
+    // 默认
+    return location.host.split(".")[0];
+  })();
+
+  log("env", env);
+
+  /** webpack require 函数引用 */
+  let webpackReq;
+
+  /** heart 核心对象引用 */
+  let heart;
+
+  let kn = {};
+  window.kn = kn;
+
+  /** 记录已加载的扩展 */
+  const exts = {};
+
+  const extBlockFunc = {};
+
+  // #endregion 全局变量
+
+  // ==================== 工具函数 ====================
+
+  // #region 工具函数
+  /**
+   * 输出普通日志
+   * @param {...any} args - 要输出的参数
+   */
+  function log(...args) {
+    console.log(`[${SCRIPT_NAME}]`, ...args);
+  }
+
+  /**
+   * 输出错误日志
+   * @param {...any} args - 要输出的参数
+   */
+  function error(...args) {
+    console.error(`[${SCRIPT_NAME}]`, ...args);
+  }
+  function isPlayer() {
+    return env.endsWith("-p");
+  }
+  function isPC() {
+    return !!window.__IS_PC__;
+  }
+  function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i].trim();
+      if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return null;
+  }
+  function htmlEncode(html) {
+    var temp = document.createElement("div");
+    temp.textContent != null
+      ? (temp.textContent = html)
+      : (temp.innerText = html);
+    var output = temp.innerHTML;
+    temp = null;
+    return output;
+  }
+  /**
+   * 将 XML 字符串解析为 DOM 节点
+   * @param {string} text - XML 字符串
+   * @returns {Node} 解析后的第一个子节点
+   */
+  function textToXml(text) {
+    return new DOMParser().parseFromString(text, "text/xml").childNodes[0];
+  }
+  function textToHtml(text) {
+    // return (new DOMParser().parseFromString(text, 'text/html')).childNodes[0];
+    const template = document.createElement("template");
+    template.innerHTML = text;
+    const fragment = template.content;
+    return fragment;
+  }
+
+  /**
+   * 判断值是否为对象类型（非 null）
+   * @param {any} value - 要检查的值
+   * @returns {boolean} 是否为对象
+   */
+  function isRecord(value) {
+    return typeof value === "object" && value !== null;
+  }
+
+  /**
+   * 将 HEX 颜色转换为 RGB 对象
+   * @param {string} hex - HEX 颜色值（如 #FF0000 或 FF0000）
+   * @returns {{r: number, g: number, b: number}} RGB 对象
+   */
+  function hexToRgb(hex) {
+    hex = hex.replace("#", "");
+    if (hex.length === 3) {
+      hex = hex
+        .split("")
+        .map((c) => c + c)
+        .join("");
+    }
+    return {
+      r: parseInt(hex.substr(0, 2), 16),
+      g: parseInt(hex.substr(2, 2), 16),
+      b: parseInt(hex.substr(4, 2), 16),
+    };
+  }
+
+  /**
+   * 将 RGB 对象转换为 HEX 颜色
+   * @param {{r: number, g: number, b: number}} rgb - RGB 对象
+   * @returns {string} HEX 颜色值
+   */
+  function rgbToHex(rgb) {
+    const toHex = (c) => {
+      const hex = Math.max(0, Math.min(255, Math.round(c))).toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    };
+    return "#" + toHex(rgb.r) + toHex(rgb.g) + toHex(rgb.b);
+  }
+
+  /**
+   * 让 HEX 颜色变暗
+   * @param {string} hex - 原始 HEX 颜色值
+   * @param {number} [darkenPercent=20] - 变暗百分比（0-100），默认 20%
+   * @returns {string} 变暗后的 HEX 颜色值
+   * @example
+   * darkenColor('#608FEE', 20) // 返回变暗 20% 的颜色
+   * darkenColor('#608FEE')     // 返回变暗 20% 的颜色（使用默认值）
+   */
+  function darkenColor(hex, darkenPercent = 20) {
+    const rgb = hexToRgb(hex);
+    const factor = 1 - darkenPercent / 100;
+
+    return rgbToHex({
+      r: rgb.r * factor,
+      g: rgb.g * factor,
+      b: rgb.b * factor,
+    });
+  }
+
+  /**
+   * 动态添加 CSS 样式到页面
+   * @param {string} style - CSS 样式字符串
+   */
+  function addStyle(style) {
+    if (document.getElementById(SCRIPT_NAME + "-style")) {
+      const styleElement = document.getElementById(SCRIPT_NAME + "-style");
+      styleElement.textContent += style;
+    } else {
+      const styleElement = document.createElement("style");
+      styleElement.textContent = style;
+      styleElement.id = SCRIPT_NAME + "-style";
+      document.head.appendChild(styleElement);
+    }
+  }
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+  function loadStyle(src) {
+    return new Promise((resolve, reject) => {
+      const style = document.createElement("link");
+      style.rel = "stylesheet";
+      style.type = "text/css";
+      style.classList.add("bn-theme");
+      style.href = src;
+      style.onload = resolve;
+      style.onerror = reject;
+      document.head.appendChild(style);
+    });
+  }
+  class Storage {
+    constructor(namespace) {
+      this.namespace = namespace;
+      this.storage = this.getAll() || {};
+    }
+    getAll() {
+      const data = localStorage.getItem(this.namespace);
+      try {
+        return data ? JSON.parse(data) : {};
+      } catch (error) {
+        error("解析存储数据失败:", error);
+        return {};
+      }
+    }
+    save(data) {
+      localStorage.setItem(this.namespace, JSON.stringify(data));
+    }
+    get(id) {
+      if (!this.storage[id]) return null;
+      return this.storage[id];
+    }
+    set(id, value) {
+      this.storage[id] = value;
+      this.save(this.storage);
+    }
+    remove(id) {
+      delete this.storage[id];
+      this.save(this.storage);
+    }
+    clear() {
+      this.storage = {};
+      localStorage.removeItem(this.namespace);
+    }
+  }
+  const storage = new Storage(SCRIPT_NAME);
+  if (![e.kn, e.knp].includes(env)) {
+    addStyle(
+      `.ant-message {font-feature-settings: "tnum","tnum";box-sizing: border-box;color: rgba(0,0,0,.85);font-size: 14px;font-variant: tabular-nums;left: 0;line-height: 1.5715;list-style: none;margin: 0;padding: 0;pointer-events: none;position: fixed;top: 8px;width: 100%;z-index: 1010}.ant-message-notice {padding: 8px;text-align: center}.ant-message-notice-content {background: #fff;border-radius: 2px;box-shadow: 0 3px 6px -4px rgba(0,0,0,.12),0 6px 16px 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05);display: inline-block;padding: 10px 16px;pointer-events: all; border-radius: 12px;}.ant-message-success .anticon {color: #52c41a}.ant-message-error .anticon {color: #ff4d4f}.ant-message-warning .anticon {color: #faad14}.ant-message-info .anticon,.ant-message-loading .anticon {color: #1890ff}.ant-message .anticon {font-size: 16px;margin-right: 8px;position: relative;top: 1px}.ant-message-notice.ant-move-up-leave.ant-move-up-leave-active {animation-duration: .3s;animation-name: MessageMoveOut}@keyframes MessageMoveOut {0% {max-height: 150px;opacity: 1;padding: 8px}to {max-height: 0;opacity: 0;padding: 0}}.ant-message-rtl,.ant-message-rtl span {direction: rtl}.ant-message-rtl .anticon {margin-left: 8px;margin-right: 0}.IconFont_wrapper__FPeRA {-webkit-font-smoothing: antialiased;color: inherit;display: inline-block;font-style: normal;line-height: 0;text-align: center;text-rendering: optimizeLegibility;text-transform: none;vertical-align: -.125em; font-size: 24px;}`,
+    );
+    //prettier-ignore
+    document.body.insertAdjacentHTML("afterbegin", `<svg aria-hidden="true" width="0" height="0" style="position: absolute; overflow: hidden;"><symbol id="icn_success" viewBox="0 0 1024 1024"><path d="M512 85.333333c235.648 0 426.666667 191.018667 426.666667 426.666667s-191.018667 426.666667-426.666667 426.666667S85.333333 747.648 85.333333 512 276.352 85.333333 512 85.333333z" fill="#25CC7D" p-id="3769"></path><path d="M753.066667 351.573333a42.666667 42.666667 0 0 1 7.893333 55.893334l-3.242667 4.266666-256 298.666667-0.768 0.810667-0.938666 1.152a42.624 42.624 0 0 1-1.152 1.152l2.858666-3.072a43.008 43.008 0 0 1-27.648 14.634666 42.837333 42.837333 0 0 1-25.856-5.333333l-1.408-0.853333-1.962666-1.28-1.109334-0.810667-170.666666-128a42.666667 42.666667 0 0 1 46.72-71.210667l4.48 2.944 138.666666 103.978667 229.973334-268.288a42.666667 42.666667 0 0 1 60.16-4.608z" fill="#FFFFFF" p-id="3770"></path></symbol><symbol id="icn_warn" viewBox="0 0 1024 1024"><path d="M585.813333 191.573333l321.365334 555.008a85.333333 85.333333 0 0 1-73.813334 128.085334H190.634667a85.333333 85.333333 0 0 1-73.856-128.085334L438.144 191.573333a85.333333 85.333333 0 0 1 147.712 0z" fill="#FFB029" p-id="3935"></path><path d="M498.346667 648.533333a1462.357333 1462.357333 0 0 0-14.378667-96.085333 1128.96 1128.96 0 0 0-6.698667-33.536c-2.048-9.344-3.84-18.133333-5.376-26.410667a302.933333 302.933333 0 0 1-3.669333-25.173333c-0.853333-8.576-1.28-18.602667-1.28-30.08 0-10.282667 1.322667-19.541333 4.053333-27.733333 2.730667-8.106667 6.4-15.104 10.922667-20.821334 4.608-5.76 9.728-10.112 15.488-13.141333a36.992 36.992 0 0 1 17.322667-4.522667 37.546667 37.546667 0 0 1 17.664 4.522667c5.717333 2.986667 10.837333 7.381333 15.317333 13.141333 4.48 5.717333 8.064 12.672 10.794667 20.864 2.730667 8.149333 4.096 17.408 4.096 27.690667a299.605333 299.605333 0 0 1-4.821334 55.253333c-1.450667 8.277333-3.2 17.066667-5.248 26.453334-2.048 9.301333-4.266667 20.48-6.741333 33.493333-2.389333 13.056-4.992 28.458667-7.68 46.250667a1718.613333 1718.613333 0 0 0-6.442667 49.834666 16.725333 16.725333 0 0 1-16.64 14.762667 16.810667 16.810667 0 0 1-16.682666-14.762667z m-23.552 85.632c0-5.461333 1.024-10.666667 3.072-15.616a37.76 37.76 0 0 1 8.576-12.8c3.712-3.626667 7.936-6.485333 12.714666-8.618666a37.674667 37.674667 0 0 1 15.573334-3.2 40.789333 40.789333 0 0 1 28.714666 11.818666 40.789333 40.789333 0 0 1 11.861334 28.416 38.656 38.656 0 0 1-11.818667 28.288 41.344 41.344 0 0 1-28.714667 11.392 39.210667 39.210667 0 0 1-15.616-3.072 42.794667 42.794667 0 0 1-12.714666-8.32 36.565333 36.565333 0 0 1-8.576-12.544 40.277333 40.277333 0 0 1-3.072-15.744z" fill="#FFFFFF" p-id="3936"></path></symbol><symbol id="icn_error" viewBox="0 0 1024 1024"><path d="M512 85.333333c235.648 0 426.666667 191.018667 426.666667 426.666667s-191.018667 426.666667-426.666667 426.666667S85.333333 747.648 85.333333 512 276.352 85.333333 512 85.333333z" fill="#F26B5C" p-id="4131"></path><path d="M703.744 334.634667a42.666667 42.666667 0 0 1 3.968 56.32l-3.541333 4.010666-132.309334 136.96 137.642667 132.949334a42.666667 42.666667 0 0 1-55.893333 64.256l-4.010667-3.498667-137.002667-132.309333-132.906666 137.642666a42.666667 42.666667 0 0 1-64.256-55.893333l3.498666-4.010667 132.266667-137.002666L313.6 401.152a42.666667 42.666667 0 0 1 55.893333-64.256l4.010667 3.498667 136.96 132.266666 132.949333-137.6a42.666667 42.666667 0 0 1 60.330667-0.426666z" fill="#FFFFFF" p-id="4132"></path></symbol></svg>`);
+  }
+  async function knNewToast(
+    text,
+    icon = "",
+    timeoutOrConfirmText = 5000,
+    confirmCallback = null,
+  ) {
+    // if (![e.kn, e.knp].includes(env)) return;
+    if (text.includes("\n")) {
+      text
+        .split("\n")
+        .forEach((t) =>
+          knNewToast(t, icon, timeoutOrConfirmText, confirmCallback),
+        );
+      return;
+    }
+    let confirmText = null,
+      timeout = -1;
+    if (typeof timeoutOrConfirmText === "string")
+      confirmText = timeoutOrConfirmText;
+    if (typeof timeoutOrConfirmText === "number")
+      timeout = timeoutOrConfirmText;
+    const id = Math.random().toString(36).substring(7);
+    if (!document.querySelector("div > div.ant-message > div"))
+      document.body.insertAdjacentHTML(
+        "afterbegin",
+        `<div><div class="ant-message"><div></div>`,
+      );
+
+    const container = document.querySelector("div > div.ant-message > div");
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<div class="${SCRIPT_NAME}_${id} ant-message" style="position:static;"><div><div><div class="ant-message-notice Toast_toastPcWrapper__G3ndh"><div class="ant-message-notice-content"><div class="ant-message-custom-content"><i class="IconFont_wrapper__FPeRA Toast_icon__WIkl9"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#${icon}"></use></svg></i><span>${text}${confirmText && confirmCallback ? `　<a>${confirmText}</a>` : ""}</span></div></div></div></div></div></div>`,
+    );
+    const message = container.querySelector(
+      `div.${SCRIPT_NAME}_${id}.ant-message`,
+    );
+    if (timeout !== -1)
+      setTimeout(() => {
+        message.remove();
+      }, timeout);
+    if (confirmText && confirmCallback)
+      message.querySelector("a").addEventListener("click", () => {
+        confirmCallback();
+        message.remove();
+      });
+  }
+
+  // ==================== 异步等待辅助函数 ====================
+
+  /**
+   * 等待 Blockly 对象加载完成
+   * @returns {Promise<Object>} Blockly 对象
+   */
+  async function getBlockly() {
+    while (!window.Blockly)
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    return window.Blockly;
+  }
+
+  /**
+   * 等待 Blockly 主工作区加载完成
+   * @returns {Promise<Object>} Blockly 主工作区对象
+   */
+  async function getWorkspace() {
+    while (!(await getBlockly()).mainWorkspace)
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    return (await getBlockly()).mainWorkspace;
+  }
+
+  /**
+   * 等待指定 DOM 元素出现
+   * @param {string} selector - CSS 选择器
+   * @returns {Promise<Element>} 匹配的 DOM 元素
+   */
+  async function getElement(selector, timeout = 20000) {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const element = document.querySelector(selector);
+        if (element) {
+          clearInterval(interval);
+          resolve(element);
+        }
+      }, 100);
+      setTimeout(() => {
+        clearInterval(interval);
+        reject(null);
+      }, timeout);
+    });
+  }
+
+  function getBlockDefine(block) {
+    try {
+      let def;
+      Blockly.Blocks[block].init.apply(
+        {
+          jsonInit: (json) => {
+            def = json;
+          },
+        },
+        [],
+      );
+      return def;
+    } catch (e) {
+      return {
+        type: "",
+        message0: "",
+      };
+    }
+  }
+  // #endregion 工具函数
+
+  // #region 内部
+
+  // ==================== Webpack Require 获取 ====================
+
+  /**
+   * 获取 webpack require 函数
+   * 通过向 webpack chunk/push 数组注入代码来捕获 __webpack_require__
+   * @returns {Promise<boolean>} 是否成功获取
+   */
+  async function getWebpackReq() {
+    // 如果已经存在，直接复用
+    if (window.__req && typeof window.__req.c === "object") {
+      webpackReq = window.__req;
+      log("复用已有 window.__req");
+      return true;
+    }
+    const reqGetter1 = (module, exports, __webpack_require__) => {
+      window.__req = __webpack_require__;
+      webpackReq = __webpack_require__;
+      log("已捕获 __webpack_require__");
+    };
+    const reqGetter2 = (__webpack_require__) => {
+      window.__req = __webpack_require__;
+      webpackReq = __webpack_require__;
+      log("已捕获 __webpack_require__");
+    };
+
+    // 根据不同编辑器版本采用不同的注入方式
+    switch (env) {
+      case e.k3:
+      case e.k4:
+        // Kitten/Kitten4 编辑器使用 webpackJsonp
+        if (
+          !window.webpackJsonp ||
+          typeof window.webpackJsonp.push !== "function"
+        ) {
+          error("webpackJsonp 不可用，无法注入");
+          return false;
+        }
+        window.webpackJsonp.push([
+          ["__require_getter__"],
+          { __require_getter__: reqGetter1 },
+          [["__require_getter__"]],
+        ]);
+        break;
+      case e.kn:
+        while (!window.webpackChunkneko)
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+        // if (isPC()) window.webpackChunkneko.push([[6729], { 6729: reqGetter1 }]);
+        // else window.webpackChunkneko.push([[5264], { 25264: reqGetter1 }]);
+        window.webpackChunkneko.push([["__require_getter__"], {}, reqGetter2]);
+        break;
+      case e.knp:
+        while (!window.webpackChunkneko)
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+        // if (isPC()) window.webpackChunkneko.push([[729], { 6729: reqGetter1 }]);
+        // else window.webpackChunkneko.push([[264], { 25264: reqGetter1 }]);
+        window.webpackChunkneko.push([["__require_getter__"], {}, reqGetter2]);
+        break;
+    }
+
+    // 等待 webpackReq 被赋值
+    while (!webpackReq)
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    return true;
+  }
+
+  // ==================== Heart 核心对象获取 ====================
+
+  /**
+   * 获取 heart 核心对象
+   * 不同编辑器版本采用不同的获取策略
+   * @returns {Promise<boolean>} 是否成功获取
+   */
+  async function getHeart() {
+    switch (env) {
+      case e.k3:
+      case e.k4:
+        // 遍历 webpack 缓存查找包含 get_heart 方法的模块
+        for (const id of Object.keys(webpackReq.c)) {
+          const cacheEntry = webpackReq.c[id];
+          const exportsValue = cacheEntry?.exports;
+          const candidateRecord = isRecord(exportsValue) ? exportsValue : null;
+
+          // 候选对象列表
+          const candidates = [
+            exportsValue,
+            candidateRecord?.default,
+            candidateRecord?.i,
+            candidateRecord?.a,
+            candidateRecord?.b,
+          ];
+
+          // 检查每个候选对象
+          for (const candidate of candidates) {
+            if (
+              isRecord(candidate) &&
+              typeof candidate.get_heart === "function"
+            ) {
+              // 循环调用直到成功获取 heart
+              while (!heart) {
+                await new Promise((resolve) => requestAnimationFrame(resolve));
+                try {
+                  heart = candidate.get_heart();
+                } catch (e) {}
+              }
+              return true;
+            }
+          }
+        }
+        break;
+      case e.kn:
+      case e.knp:
+        for (const id of Object.keys(webpackReq.m)) {
+          try {
+            const cacheEntry = webpackReq(id);
+            // for (const key of Object.keys(cacheEntry)) {
+            for (const key of ["cG"]) {
+              try {
+                if (cacheEntry[key].instance.heart.core) {
+                  log("heart module id", id);
+                  heart = cacheEntry[key].instance.heart.core;
+                  return true;
+                }
+              } catch (e) {}
+            }
+          } catch (e) {}
+        }
+        break;
+      case e.bn:
+        while (!window.HookRuntime)
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+        heart = HookRuntime.exports.get_webview_runtime().heart.heart;
+        log("bn heart", heart);
+        return true;
+    }
+    return false;
+  }
+
+  // #endregion 内部
+  // ==================== 工具箱刷新 ====================
+
+  /**
+   * 重新加载并更新 Blockly 工具箱
+   * 根据编辑器版本采用不同的更新策略
+   */
+  async function reloadToolbox() {
+    const workspace = await getWorkspace();
+
+    switch (env) {
+      case e.k3:
+        // Kitten 编辑器：克隆并修改语言树
+        let tree = workspace.options.languageTree.cloneNode(true);
+
+        // 等待加载完成
+        while (tree.querySelector('[name="Loading"]')) {
+          tree = workspace.options.languageTree.cloneNode(true);
+          await new Promise((resolve) => requestAnimationFrame(resolve));
+        }
+
+        // 遍历所有扩展类型，添加到工具箱
+        Object.keys(exts).forEach((id) => {
+          // 移除旧的分类
+          tree.querySelector(`[data-ext-id="${id}"]`)?.remove();
+
+          // 创建新的分类节点
+          const category = textToXml(
+            `<category data-ext-id="${id}" name="${exts[id]?.title}" colour="${exts[id]?.color}"></category>`,
+          );
+          exts[id]?._toolboxXmls.forEach((xml) => category.appendChild(xml));
+          tree.appendChild(category);
+        });
+
+        // 更新工作区的语言树
+        workspace.options.languageTree = tree;
+        workspace.update_toolbox(tree);
+        // log(1);
+
+        // 为工具箱节点添加 category-name 属性
+        const treeRoot = await getElement(
+          "#workspace > div > div > div.blocklyTreeRoot",
+        );
+        treeRoot.childNodes.forEach((node) => {
+          const name = node.querySelector("span.blocklyTreeLabel")?.innerText;
+          node.setAttribute("category-name", name);
+        });
+        // log(2);
+        break;
+
+      case e.k4:
+      case e.kn:
+        if (env === e.kn)
+          (
+            await getElement(".ToolboxManagerButton_toolboxManagerBtn__9DvYr")
+          ).style.height = "0";
+        // Kitten4/KN 编辑器：使用 toolbox API 添加节点
+        Object.keys(exts).forEach((id) => {
+          // 移除旧的扩展节点
+          workspace.toolbox_.children_
+            .find((e) => e.name_ == "ext_" + id)
+            ?.dispose();
+          if (!exts[id]?._toolboxXmls) return;
+          // 根据编辑器设置图标尺寸
+          const iconSize = env === e.k4 ? "24px" : "36px";
+          const blocks = exts[id]?._toolboxXmls;
+          // 添加新的工具箱节点
+          workspace.toolbox_.add(
+            workspace.toolbox_.new_node({
+              text: env === e.k4 ? exts[id]?.title : undefined,
+              name: "ext_" + id,
+              color: env === e.kn ? exts[id]?.color : undefined,
+              icon: {
+                html: `<img src="${exts[id]?.icon?.normal}" draggable="false" style="height:${iconSize};width:${iconSize};">`,
+              },
+              blocks,
+            }),
+          );
+        });
+        break;
+      case e.bn:
+        Object.keys(exts).forEach((id) => {
+          // 移除旧的扩展节点
+          workspace.toolbox_.children_
+            .find((e) => e.name_ == "ext_" + id)
+            ?.dispose();
+
+          // 根据编辑器设置图标尺寸
+          const iconSize = "36px";
+          // 添加新的工具箱节点
+          workspace.toolbox_.add(
+            workspace.toolbox_.new_node({
+              name: "ext_" + id,
+              color: exts[id]?.color,
+              icon: {
+                html: `<img src="${exts[id]?.icon?.normal}" draggable="false" style="height:${iconSize};width:${iconSize};">`,
+              },
+              blocks: exts[id]?._toolboxXmls,
+            }),
+          );
+        });
+        break;
+    }
+  }
+
+  // ==================== 扩展安装 ====================
+  /**
+   * 为扩展提供的工具函数集
+   */
+  const utils = {
+    isPlayer,
+    getEnv: () => env,
+    /**
+     * 注册程序启动时的回调
+     * @param {Function} callback - 回调函数
+     * @returns {Function} 取消注册的函数
+     */
+    onStart: (callback) => {
+      let lastValue = heart.runtime_data?.run_status;
+      const timer = setInterval(() => {
+        const current = heart.runtime_data?.run_status;
+        if (current === 0 && lastValue !== 0) {
+          callback(current);
+        }
+        lastValue = current;
+      }, 100);
+      return () => clearInterval(timer);
+    },
+
+    /**
+     * 注册程序停止时的回调
+     * @param {Function} callback - 回调函数
+     * @returns {Function} 取消注册的函数
+     */
+    onStop: (callback) => {
+      let lastValue = heart.runtime_data?.run_status;
+      const timer = setInterval(() => {
+        const current = heart.runtime_data?.run_status;
+        if (current === 1 && lastValue !== 1) {
+          callback(current);
+        }
+        lastValue = current;
+      }, 100);
+      return () => clearInterval(timer);
+    },
+  };
+  let i = 1;
+  /**
+   * 安装自定义扩展
+   * 解析扩展代码，注册 blocks，更新工具箱
+   * @param {string} extCode - 扩展代码字符串（CommonJS 格式）
+   */
+  async function installExt(extCode, rewrite = true, fileName = `TMP_${i}`) {
+    try {
+      // 准备 exports 对象
+      const exports = { extension: {} };
+
+      // 为当前扩展创建独立的 utils 副本，避免修改源对象
+      const extUtils = Object.create(utils);
+      extUtils.emitEvent = (eventId, params) => {
+        heart.runtime_manager.send_action({
+          id: "ext_" + ext.type + "_" + eventId,
+          namespace: "",
+          parameters: params,
+        });
+      };
+      new Function(
+        "require",
+        "exports",
+        `${extCode}\
+//# sourceURL=${SCRIPT_NAME}/${fileName}.cue.js`,
+      )((module) => {
+        switch (module) {
+          case "utils":
+            return extUtils;
+        }
+      }, exports);
+      i++;
+
+      const ext = exports.extension;
+      if (exts[ext.type]) {
+        if (!rewrite) return;
+        if (!confirm(`${ext.title}(${ext.type})已存在，是否覆盖？`)) return;
+      }
+
+      ext._sourceCode = extCode;
+      if (!ext.icon) ext.icon = "";
+      if (typeof ext.icon === "string")
+        ext.icon = {
+          normal: ext.icon,
+          selected: ext.icon,
+        };
+      const Blockly = await getBlockly();
+      /**
+       * 将十六进制颜色转换为 Blockly 主题颜色 ID
+       * @param {string} color - 十六进制颜色值（如 #FF0000）
+       * @returns {string} Blockly 颜色引用字符串
+       */
+      function customHexColor(color) {
+        const colorId = "EXT_" + color.replace("#", "");
+        Blockly.theme.block_color[colorId] = {
+          fill: color,
+          border: darkenColor(color),
+          layer: darkenColor(color),
+        };
+        return `%{BKY_${colorId}}`;
+      }
+      /**
+       * 定义事件参数块（用于事件块的输入插槽）
+       * @param {string} blockId - 块类型 ID
+       * @param {string} text - 显示的文本
+       * @param {string} color - 颜色
+       */
+      function defineEventParamClone(blockId, text, color) {
+        Blockly.Blocks["__clone__" + blockId] = {
+          init: function () {
+            const __IS_PC__ = env !== e.bn;
+            let thisBlock = this;
+
+            // 创建虚拟输入并附加文本标签
+            this.append_dummy_input().append_field(text);
+            this.set_output(true);
+            this.set_inputs_inline(true);
+            this.set_colour(color, darkenColor(color));
+            // 自定义鼠标按下事件处理（实现拖拽创建新块）
+            this.on_mouse_down = function (event) {
+              let eventGroup = Blockly.events.get_group();
+              if (
+                (Blockly.events.set_group(eventGroup || !0),
+                __IS_PC__ && 0 !== event.button)
+              )
+                return (event.preventDefault(), void event.stopPropagation());
+
+              let gesture = thisBlock.workspace.get_gesture(event);
+              log("on_mouse_down", event, gesture);
+              if (gesture) {
+                let o = gesture.handle_move.bind(gesture),
+                  s = gesture.handle_up.bind(gesture),
+                  aaaa = 0,
+                  u = !1;
+                gesture.handle_move = function (i) {
+                  if (u) o(i);
+                  else if (aaaa < 10) aaaa++;
+                  else if (((gesture.is_dragging_block = !0), true)) {
+                    // 创建新块并替换当前块
+                    let s = (function () {
+                      Blockly.events.disable();
+                      const newBlock = thisBlock.workspace.new_block(blockId),
+                        thisBlockPos = thisBlock.get_relative_to_surface_xy();
+                      return (
+                        newBlock.move_by(thisBlockPos),
+                        newBlock.init_svg(),
+                        newBlock.render(),
+                        Blockly.events.enable(),
+                        Blockly.events.is_enabled(),
+                        newBlock
+                      );
+                    })();
+                    s.select();
+                    gesture.handle_block_start(event, s);
+                    gesture.target_block = s;
+                    u = !0;
+                  } else gesture.cancel();
+                };
+                gesture.handle_up = function (t) {
+                  s(t);
+                  Blockly.events.set_group(eventGroup);
+                };
+              }
+            };
+          },
+        };
+      }
+      // 处理 [方法] blocks：转换为 Blockly 格式并设置默认属性
+      ext._blocks = ext.methods.map((method) => {
+        const block = {
+          ...method,
+          type: "ext_" + ext.type + "_" + method.type,
+        };
+
+        // 继承扩展的颜色
+        if (!block.color) block.color = ext.color;
+        block.colour = block.color;
+
+        // 设置默认的连接属性（如果没有指定 output）
+        if (typeof block.output === "undefined") {
+          if (typeof block.previousStatement === "undefined")
+            block.previousStatement = true;
+          if (typeof block.nextStatement === "undefined")
+            block.nextStatement = true;
+          if (typeof block.inputsInline === "undefined")
+            block.inputsInline = true;
+        }
+
+        // 非 kitten 编辑器需要使用主题颜色
+        if (env !== e.k3) block.colour = customHexColor(block.colour);
+        // 兼容kn下拉框
+        // if (env === e.kn)
+        //     for (let i = 0; block[`args${i}`]; i++) {
+        //         for (const arg of block[`args${i}`]) {
+        //             if (arg?.type === 'field_dropdown') {
+        //                 arg.type = 'field_neko_dropdown';
+        //                 arg.options = { menu_generator_advanced: arg.options };
+        //             }
+        //         }
+        //     }
+        // 兼容k4下拉框
+        // if (env === e.k4)
+        //     for (let i = 0; block[`args${i}`]; i++) {
+        //         for (const arg of block[`args${i}`]) {
+        //             if (arg?.type === 'field_dropdown' && typeof arg?.options === 'function') {
+        //                 arg.type = 'field_dropdown_advanced';
+        //                 arg.advanced_options = arg.options;
+        //                 arg.options = undefined;
+        //             }
+        //         }
+        //     }
+
+        return block;
+      });
+      // 处理 [事件] blocks
+      ext.events.forEach((event) => {
+        event.color = event.color || "#608FEE";
+        let messageIndex = 2;
+        const block = {
+          type: "ext_" + ext.type + "_" + event.type,
+          message0: "%1" + event.text,
+          args0: [
+            {
+              type: "field_icon",
+              is_head: true,
+              src: event.icon,
+              width: 38,
+              height: 38,
+              alt: "*",
+            },
+          ],
+          nextStatement: true,
+          inputsInline: true,
+          colour: event.color,
+        };
+        if (env !== e.k3) block.colour = customHexColor(block.colour);
+        // 处理事件参数
+        if (event.params)
+          event.params.forEach((param) => {
+            // 添加到事件积木中
+            block.message0 += `%${messageIndex}`;
+            messageIndex++;
+            block.args0.push({
+              type: "input_value",
+              name: param.text,
+              check: "undefined",
+            });
+            const paramBlockType = `ext_${ext.type}_${event.type}__event_param__${param.type}`;
+            // 定义事件参数
+            ext._blocks.push({
+              type: paramBlockType,
+              message0: param.text,
+              args0: [],
+              inputsInline: true,
+              colour: env !== e.k3 ? customHexColor(event.color) : event.color,
+              output: param.check,
+            });
+            // 定义clone事件参数
+            defineEventParamClone(paramBlockType, param.text, event.color);
+          });
+        ext._blocks.push(block);
+      });
+      // 批量定义所有 blocks
+      ext._blocks.forEach((block) => {
+        Blockly.Blocks[block.type] = {
+          init: function () {
+            this.jsonInit(block);
+            // this.colour_ = block.color;
+          },
+        };
+      });
+      /**
+       * 生成参数值的 XML 片段
+       * 根据参数类型自动生成对应的 shadow block
+       * @param {string} name - 参数名称
+       * @param {any} value - 默认值
+       * @param {string|string[]} check - 类型检查（Number/String 等）
+       * @returns {string} XML 字符串
+       */
+      function generateValueXml(name, value, check) {
+        if (!Array.isArray(check)) check = [check];
+
+        if (check[0] === "Array" && check.length === 1)
+          return `<value name="${name}"><shadow type="pure_list_get"/></value>`;
+        if (check[0] === "Boolean" && check.length === 1 && value !== undefined)
+          return `<value name="${name}"><shadow type="logic_boolean"><field name="BOOL">${value ? "true" : "false"}</field></shadow></value>`;
+        if (check[0] === "Boolean" && check.length === 1 && value === undefined)
+          return `<value name="${name}"><empty type="logic_empty"><field name="BOOL"></field></empty></value>`;
+        if (check[0] === "Number" && check.length === 1)
+          return `<value name="${name}"><shadow type="math_number"><field name="NUM">${value || 0}</field></shadow></value>`;
+        if (check.includes("String"))
+          return `<value name="${name}"><shadow type="text"><field name="TEXT">${value || ""}</field></shadow></value>`;
+        return "";
+      }
+      /**
+       * 为单个 block 生成完整的 toolbox XML
+       * 支持多 messages（args0, args1, args2...）和自动参数填充
+       * @param {string} blockType - Block 类型
+       * @param {number} gap - 间隔距离（可选）
+       * @returns {string} XML 字符串
+       */
+      function generateBlockXml(blockType, gap) {
+        const blockDef = ext._blocks.find((b) => b.type === blockType);
+        if (!blockDef) {
+          error(`未找到block定义: ${blockType}`);
+          return `<block type="${blockType}"${gap ? ` gap="${gap}"` : ""}></block>`;
+        }
+
+        let valuesXml = "";
+
+        // 遍历所有 args（支持 args0, args1, args2...）
+        for (let i = 0; blockDef[`args${i}`]; i++) {
+          if (Array.isArray(blockDef[`args${i}`])) {
+            blockDef[`args${i}`].forEach((arg, index) => {
+              switch (arg.type) {
+                case "input_value":
+                  valuesXml += generateValueXml(
+                    arg.name,
+                    arg.value,
+                    arg.check || "String",
+                  );
+                  break;
+                case "field_dropdown":
+                  valuesXml += `<field name="${arg.name}">${arg.value}</field>`;
+                  break;
+              }
+            });
+          }
+        }
+
+        return `<block type="${blockType}"${gap ? ` gap="${gap}"` : ""}>${valuesXml}</block>`;
+      }
+      // KN扩展标题&删除按钮
+      if (env === e.kn) {
+        function createSvg(name, attrs) {
+          let d = "xlink:";
+          void 0 === attrs && (attrs = {});
+          let svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            name,
+          );
+          for (let attr in attrs)
+            if (0 === attr.indexOf(d)) {
+              let s = attr.slice(d.length);
+              svg.setAttributeNS(
+                "http://www.w3.org/1999/xlink",
+                s,
+                attrs[attr],
+              );
+            } else svg.setAttribute(attr, attrs[attr]);
+          return svg;
+        }
+        Blockly.mainWorkspace.register_flyout_button(ext.type, function () {
+          let btn = createSvg("foreignObject", {
+            height: "64px",
+            width: "calc(100% - 30px)",
+          });
+          btn.appendChild(
+            textToHtml(`
+                    <div id="${ext.type}" class="TitleButton_titleWrapper__sCPDn">
+                        <div class="TitleButton_title__wIGFc">
+                            <span>${ext.title}</span>
+                            <span style="color: rgb(192, 202, 230);">·</span>
+                            <span style="color: rgb(192, 202, 230); margin-top: 0px; font-size: 12px;">${ext.type}</span>
+                        </div>
+                    </div>
+                `),
+          );
+          return {
+            svg_group: btn,
+            update_callback: function (btn) {
+              return undefined;
+            },
+          };
+        });
+        Blockly.mainWorkspace.register_flyout_button(
+          ext.type + "_remove_button",
+          function () {
+            let btn = createSvg("foreignObject", {
+              height: "24px",
+              width: "24px",
+            });
+            btn.appendChild(
+              textToHtml(`
+                    <div class="HardwareRemoveButton_button__isJ0s">
+                        <i class="IconFont_wrapper__FPeRA">
+                            <svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false">
+                                <use xlink:href="#ic_trash"></use>
+                            </svg>
+                        </i>
+                    </div>
+                `),
+            );
+            btn.addEventListener("click", function () {
+              Blockly.mainWorkspace.toolbox_.clear_selection();
+              exts[ext.type] = undefined;
+              reloadToolbox();
+              knNewToast(
+                `已卸载「${ext.title}」(${ext.type})`,
+                "icn_success",
+                5000,
+              );
+            });
+            return {
+              svg_group: btn,
+              update_callback: function (btn) {
+                return undefined;
+              },
+            };
+          },
+        );
+      }
+      // 生成工具箱 XML 列表
+      ext._toolboxXmls = [
+        textToXml(
+          `<button type="${ext.type}" callbackkey="${ext.type}" position="fixed" top="0" height="64px" width="calc(100% - 30px)">`,
+        ),
+        textToXml(
+          `<button type="blank_title" callbackkey="blank_title" height="40px" width="100%"/>`,
+        ),
+        textToXml(
+          `<button type="${ext.type}_remove_button" callbackkey="flyout_remove_button" position="fixed" height="24px" width="24px" top="20" right="8"/>`,
+        ),
+        ...ext.toolbox
+          .map((item) => {
+            switch (item.type) {
+              case "xml":
+                // 自定义XML
+                return item.text;
+              case "method":
+                // 方法块：使用 generateBlockXml 生成带参数的 XML
+                return generateBlockXml(
+                  "ext_" + ext.type + "_" + item.block,
+                  item.gap,
+                );
+              case "event":
+                // 事件块：生成带有参数占位符的 XML
+                const params = ext.events.find(
+                  (e) => e.type === item.block,
+                ).params;
+                return `<block type="${"ext_" + ext.type + "_" + item.block}">${params.map(({ text, type }) => `<value name="${text}"><block type="__clone__ext_${ext.type}_${item.block}__event_param__${type}"></block></value>`)}</block>`;
+              case "label":
+                return `<label type="flyout_line" width="234" height="17" text="${item.text}" web-class="${SCRIPT_NAME}_extLabel"/>`;
+              default:
+                return `<label type="flyout_line" width="234" height="17" text="未知类型工具箱项：${item.type}" web-class="${SCRIPT_NAME}_extLabel"/>`;
+            }
+          })
+          .map(textToXml),
+      ];
+      // 添加K3自定义样式（图标、颜色等）
+      if (env === e.k3)
+        addStyle(`
+                    .blocklyToolboxDiv [role="treeitem"][category-name="${ext?.title}"] .blocklyTreeIcon {
+                    background: url(${ext?.icon?.normal});width:24px;height:24px;background-size:contain;}
+                    .blocklyToolboxDiv [role="treeitem"][category-name="${ext?.title}"][aria-selected="true"] .blocklyTreeIcon {
+                    background: url(${ext?.icon?.selected});width:24px;height:24px;background-size:contain;}
+                `);
+      // 保存扩展类型
+      exts[ext.type] = ext;
+      // 等待 registry 初始化完成
+      while (!heart.registry?.domain_function)
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      const registry = heart.registry;
+      /**
+       * 注册 domain function 到 heart registry
+       * 使 block 能够在运行时被调用
+       * @param {string} name - 函数名称（通常是 block type）
+       * @param {Function} func - 执行函数
+       */
+      function regDomainFunction(name, func) {
+        registry.domain_function[name] = func;
+        registry.domain_function_list.push(func);
+        registry.domain_function_index[name] =
+          registry.domain_function_types.push(name) - 1;
+      }
+      // 注册所有 blocks 的 domain function
+      ext._blocks.forEach((block) => {
+        /**
+         * 积木解释器
+         * @param {Record<any,any>} params 积木传参
+         * @param {string} interpreterId 解释器ID
+         * @param {string} entityId 实体ID
+         * @param {{runtime_manager: any,add_user_procedure_call_to_stack: any,get_action_parameter: any,create_domain_function_error: any} utils 工具函数
+         * @param {string} blockId 积木ID
+         * @param {{proc_id: string,proc_call_bid: string,proc_parameters: Record<any, any>}} currentFrame 当前帧对象
+         */
+        const func = function (
+          params,
+          interpreterId,
+          entityId,
+          utils,
+          blockId,
+          currentFrame,
+        ) {
+          function console_(type, msgs) {
+            if (env === e.kn)
+              kn.ErrorCollector.addError({
+                id: blockId,
+                visible: true,
+                color: "",
+                entityId: entityId,
+                entityName: "",
+                entityUlr: "",
+                screenId: "",
+                screenName: "",
+                currentFrame: currentFrame,
+                blinkErrorTitle: block.type,
+                type: type === "warn" ? "warning" : type,
+                blinkErrorText: msgs.join(" "),
+                description: msgs.join(" "),
+              });
+            else console[type](...msgs);
+          }
+          try {
+            const utils = {
+              ...extUtils,
+              interpreterId,
+              entityId,
+              blockId,
+              currentFrame,
+              console: {
+                log: (...msgs) => {
+                  console_("log", msgs);
+                },
+                warn: (...msgs) => {
+                  console_("warn", msgs);
+                },
+                error: (...msgs) => {
+                  console_("error", msgs);
+                },
+              },
+              actor: (() => {
+                switch (env) {
+                  case e.kn:
+                  case e.knp:
+                    return kn.stageUtils.getStageTarget(entityId);
+                }
+              })(),
+            };
+            return block.function(params, utils, utils);
+          } catch (e) {
+            console_("error", [e.stack]);
+          }
+        };
+        extBlockFunc[block.type] = func;
+        regDomainFunction(block.type, func);
+      });
+      // 注册 action 类型的辅助函数
+      function regAction(id) {
+        registry.register_action_type({
+          namespace: "",
+          id: id,
+        });
+        registry.register({
+          namespace: "",
+          id: id,
+          respond: {
+            to_action: {
+              namespace: "",
+              id: id,
+            },
+            type: "action",
+            async: false,
+            entity_specific: false,
+            trigger_function: (...args) => {
+              log(id, "trigger", ...args);
+            },
+          },
+        });
+      }
+      // 注册所有 events 的 domain function
+      ext.events.forEach((event) => {
+        regAction(`ext_${ext.type}_${event.type}`);
+        if (event.params)
+          event.params.forEach((param) => {
+            const paramBlockType = `ext_${ext.type}_${event.type}__event_param__${param.type}`;
+            regDomainFunction(paramBlockType, async (_, __, ___, utils) => {
+              log(utils.runtime_manager);
+              const getActionParam = () =>
+                utils.runtime_manager.interpreters[
+                  Object.keys(utils.runtime_manager.interpreters).find((key) =>
+                    key.startsWith("__action_responder_interpreter__"),
+                  )
+                ].action_parameters;
+              while (!getActionParam())
+                await new Promise((resolve) => requestAnimationFrame(resolve));
+              return getActionParam()[param.type];
+            });
+          });
+      });
+      log(ext.type, "installed", ext);
+      knNewToast(`已安装「${ext.title}」(${ext.type})`, "icn_success", 5000);
+    } catch (e) {
+      if (env === e.kn)
+        kn.DialogApi.openMessage([
+          {
+            key: Blockly.utils.gen_uid(),
+            message: "扩展安装时出错",
+            description: e.stack,
+          },
+        ]);
+      else knNewToast("扩展安装时出错：" + e, "icn_error", 10000);
+    }
+  }
+
+  // ==================== 添加扩展导入按钮 ====================
+
+  async function addExtImportBtn() {
+    const btnText = "导入扩展";
+    const extImportBtn = await (async () => {
+      switch (env) {
+        case e.k3:
+          const menu3 = await getElement(
+            "#kitten_main_container > header > div.header_right--pB91K > div.header-btn--2q2v7.prevent-active--2Bf7o > div.header-dropdown--xv3Ao",
+          );
+          const button3 = document.createElement("div");
+          button3.className = "header-dropdown-item--2_TNh";
+          button3.innerText = btnText;
+          menu3.appendChild(button3);
+          return button3;
+        case e.k4:
+          const menu4 = await getElement(
+            "#header-setting-btn > div.CUI-menu-menu",
+          );
+          const button4 = document.createElement("div");
+          button4.className = "CUI-menu-menu-item CUI-menu-bg-hover";
+          button4.innerHTML = `<div class="CUI-menu-menu-item-wrap" style="display: flex;">${btnText}</div>`;
+          menu4.appendChild(button4);
+          return button4;
+        case e.kn:
+          const headerBar = await getElement("#HEADER_BAR");
+          let menuN;
+          for (const menu of headerBar.querySelectorAll(
+            "#HEADER_BAR > div > div > div > ul",
+          )) {
+            if (menu.innerText.includes("关于KittenN")) {
+              menuN = menu;
+              break;
+            }
+          }
+          if (!menuN) return;
+          menuN.style.maxHeight = "none";
+          const buttonN = document.createElement("li");
+          buttonN.className = "ant-menu-item Menu_icon__ur9Tk extImportBtn";
+          addStyle(
+            `li.extImportBtn:hover {background-color: var(--B2) !important;}`,
+          );
+          buttonN.innerHTML = `<i class="IconFont_wrapper__FPeRA ant-menu-item-icon"><svg version="1.1" width="20.00" height="20.00" viewBox="0.00 0.00 20.00 20.00"><g clip-path="url(#master_svg0_313_919)"><path d="M13.65,8.81L13.65,5.60Q13.65,5.12,13.31,4.79Q12.97,4.45,12.50,4.45L8.27,4.45Q7.79,4.45,7.45,4.79L6.99,5.25L5.21,5.25L4.75,4.79Q4.41,4.45,3.93,4.45L2.90,4.45Q2.42,4.45,2.09,4.79Q1.75,4.45,1.75,5.60L1.75,8.81Q1.75,9.28,2.09,9.62Q2.42,9.96,2.90,9.96L3.80,9.96L4.26,10.42Q4.59,10.75,5.07,10.75L7.13,10.75Q7.61,10.75,7.95,10.41L8.40,9.96L12.50,9.96Q12.97,9.96,13.31,9.62Q13.65,9.28,13.65,8.81ZM12.15,5.95L12.15,8.46L8.26,8.46Q7.78,8.46,7.44,8.80L6.99,9.25L5.21,9.25L4.76,8.79Q4.42,8.46,3.94,8.46L3.25,8.46L3.25,5.95L3.79,5.95L4.25,6.41Q4.59,6.75,5.07,6.75L7.13,6.75Q7.61,6.75,7.95,6.41L8.41,5.95L12.15,5.95ZM17.65,15.41L17.65,12.20Q17.65,11.72,17.31,11.39Q16.98,11.05,16.50,11.05L8.27,11.05Q7.79,11.05,7.45,11.39L6.99,11.85L5.21,11.85L4.75,11.39Q4.41,11.05,3.93,11.05L2.90,11.05Q2.42,11.05,2.09,11.39Q1.75,11.72,1.75,12.20L1.75,15.41Q1.75,15.88,2.09,16.22Q2.42,16.56,2.90,16.56L3.80,16.56L4.25,17.01Q4.59,17.35,5.07,17.35L7.13,17.35Q7.61,17.35,7.95,17.01L8.40,16.56L16.50,16.56Q16.98,16.56,17.31,16.22Q17.65,15.88,17.65,15.41ZM16.15,12.55L16.15,15.06L8.26,15.06Q7.78,15.06,7.44,15.40L6.99,15.85L5.21,15.85L4.76,15.39Q4.42,15.06,3.94,15.06L3.25,15.06L3.25,12.55L3.79,12.55L4.25,13.01Q4.59,13.35,5.07,13.35L7.13,13.35Q7.61,13.35,7.95,13.01L8.41,12.55L16.15,12.55Z" fill-rule="evenodd" fill="#51628C" fill-opacity="1.00"></path><path d="" fill="#51628C" fill-opacity="1.00"></path><path d="M16.09,3.00Q16.09,2.92,16.11,2.84Q16.12,2.76,16.15,2.69Q16.18,2.62,16.23,2.55Q16.27,2.48,16.33,2.43Q16.38,2.37,16.45,2.33Q16.52,2.28,16.59,2.25Q16.66,2.22,16.74,2.21Q16.82,2.19,16.90,2.19Q16.98,2.19,17.06,2.21Q17.14,2.22,17.21,2.25Q17.28,2.28,17.35,2.33Q17.42,2.37,17.47,2.43Q17.53,2.48,17.57,2.55Q17.62,2.62,17.65,2.69Q17.68,2.76,17.69,2.84Q17.71,2.92,17.71,3.00L17.71,3.00L17.71,6.20L17.71,6.20Q17.71,6.28,17.69,6.36Q17.68,6.44,17.65,6.51Q17.62,6.58,17.57,6.65Q17.53,6.72,17.47,6.77Q17.42,6.83,17.35,6.87Q17.28,6.92,17.21,6.95Q17.14,6.98,17.06,6.99Q16.98,7.01,16.90,7.01Q16.82,7.01,16.74,6.99Q16.66,6.98,16.59,6.95Q16.52,6.92,16.45,6.87Q16.38,6.83,16.33,6.77Q16.27,6.72,16.23,6.65Q16.18,6.58,16.15,6.51Q16.12,6.44,16.11,6.36Q16.09,6.28,16.09,6.20L16.09,6.20L16.09,3.00L16.09,3.00Z" fill-rule="evenodd" fill="#51628C" fill-opacity="1.00"></path><path d="" fill="#51628C" fill-opacity="1.00"></path><path d="M18.50,3.79L15.30,3.79L15.30,3.79Q15.22,3.79,15.14,3.81Q15.06,3.82,14.99,3.85Q14.92,3.88,14.85,3.93Q14.78,3.97,14.73,4.03Q14.67,4.08,14.63,4.15Q14.58,4.22,14.55,4.29Q14.52,4.36,14.51,4.44Q14.49,4.52,14.49,4.60Q14.49,4.68,14.51,4.76Q14.52,4.84,14.55,4.91Q14.58,4.98,14.63,5.05Q14.67,5.12,14.73,5.17Q14.78,5.23,14.85,5.27Q14.92,5.32,14.99,5.35Q15.06,5.38,15.14,5.39Q15.22,5.41,15.30,5.41L15.30,5.41L18.50,5.41L18.50,5.39Q18.58,5.39,18.66,5.38Q18.74,5.37,18.81,5.34Q18.88,5.32,18.95,5.27Q19.02,5.23,19.07,5.17Q19.13,5.12,19.17,5.05Q19.22,4.98,19.25,4.91Q19.28,4.84,19.29,4.76Q19.31,4.68,19.31,4.60Q19.31,4.52,19.29,4.44Q19.28,4.36,19.25,4.29Q19.22,4.22,19.17,4.15Q19.13,4.08,19.07,4.03Q19.02,3.97,18.95,3.93Q18.88,3.88,18.81,3.85Q18.74,3.82,18.66,3.81Q18.58,3.79,18.50,3.79L18.50,3.79Z" fill-rule="evenodd" fill="#51628C" fill-opacity="1.00"></path></g></svg></i><span class="ant-menu-title-content">${btnText}</span>`;
+          menuN.appendChild(buttonN);
+          return buttonN;
+      }
+    })();
+    if (!extImportBtn) {
+      error("无法添加扩展导入按钮");
+      return;
+    }
+    extImportBtn.onclick = async () => {
+      const [fileHandle] = await window.showOpenFilePicker({
+        types: [
+          {
+            description: "编程猫通用扩展文件",
+            accept: {
+              "text/javascript": [".cue.js"],
+            },
+          },
+        ],
+        excludeAcceptAllOption: true,
+        multiple: false,
+      });
+      const file = await fileHandle.getFile();
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const extCode = reader.result;
+        installExt(extCode);
+      };
+      reader.readAsText(file);
+    };
+  }
+  // ==================== 你好杰克XHR请求 ====================
+  const extDataKey = "CUE";
+  function modifyWorkData(json) {
+    json[extDataKey] = {};
+    Object.keys(exts).forEach((key) => {
+      json[extDataKey][key] = exts[key];
+    });
+    log("修改后作品数据", json);
+    return json;
+  }
+  function processResponseText(text) {
+    try {
+      const json = JSON.parse(text);
+      log("作品数据", json);
+      if (json[extDataKey]) {
+        const extData = json[extDataKey];
+        log("扩展数据", extData);
+        function installAllExt() {
+          for (const key of Object.keys(extData))
+            if (typeof extData[key] === "string")
+              Object.keys(extData).forEach((key) => installExt(extData[key]));
+            else
+              Object.keys(extData).forEach((key) =>
+                installExt(extData[key]._sourceCode, true, key),
+              );
+        }
+        if (isPlayer()) {
+          if (!kn.stageUtils)
+            knNewToast("角色对象不可用！", "icn_error", 100000);
+          const root = document.querySelector("#root");
+          function extItem(text) {
+            return `<div style="display:flex;margin-top: 10px;"><i style="font-size:24px;margin-right:10px;line-height: 0;"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_point"></use></svg></i><div class="KittenNVersion_textWrapper__9XIWE" style="color:#000;font-size:16px;font-style:normal;font-weight:400;line-height:24px;">${text}</div></div>`;
+          }
+          root.insertAdjacentHTML(
+            "beforeend",
+            `<div class="${SCRIPT_NAME}ExtDialog" style="color:rgba(0,0,0,.85);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-size:14px;pointer-events:auto;box-sizing:border-box;background:#fff;border-radius:24px;bottom:0;display:flex;flex-direction:column;left:0;margin:auto;overflow:hidden;position:fixed;right:0;top:0;z-index:var(--z-index-modal);width:50vw;height: 50vh;"><div class="closeBtn" style="color:var(--T1);cursor:pointer;display:flex;font-size:24px;position:absolute;right:16px;top:16px;width:24px;"><i class="IconFont_wrapper__FPeRA"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_close"></use></svg></i></div><div style="display:flex;margin:24px;flex-direction:column;"><div style="color:#000;font-size:20px;letter-spacing:2px;margin-bottom:16px;">即将安装以下扩展</div><div style="color:red;">您正在播放的作品使用了扩展，具有安全风险，请确认此作品和以下扩展是可信的，恶意的作品或扩展可以盗取您的账号，加载器开发团队不会承担扩展造成的任何损失。</div><div style="overflow-y:scroll;padding-right:24px;height: 220px;">${Object.keys(
+              extData,
+            )
+              .map((key) => extItem(`${extData[key].title} (${key})`))
+              .join(
+                "",
+              )}</div><div style="font-size:16px;position: absolute;bottom: 70px;right: 0;margin-right: 30px;"><a class="okBtn" style="font-size:16px;color:#6536e8;">是的，我信任<i class="IconFont_wrapper__FPeRA KittenNVersion_chevronRigth__mDmNl"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_chevron-right"></use></svg></i></a></div><div style="font-size:16px;position: absolute;bottom: 30px;right: 0;margin-right: 30px;"><a target="_blank" href="https://better-nemo.feishu.cn/wiki/OJRfwEtnSig3ezknuY9cshhPnpg" style="font-size:16px;color:#6536e8;">为什么总是出现此提示<i class="IconFont_wrapper__FPeRA KittenNVersion_chevronRigth__mDmNl"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_chevron-right"></use></svg></i></a></div></div></div>`,
+          );
+          const dialog = root.querySelector(`.${SCRIPT_NAME}ExtDialog`);
+          const closeButton = dialog.querySelector(".closeBtn");
+          const okButton = dialog.querySelector(".okBtn");
+          closeButton.onclick = () => dialog.remove();
+          okButton.onclick = () => {
+            dialog.remove();
+            installAllExt();
+          };
+        } else installAllExt();
+      }
+    } catch (e) {}
+  }
+  async function hijackXhrReq() {
+    log("开始劫持XHR请求");
+    const originalOpen = XMLHttpRequest.prototype.open;
+    const originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function (method, url) {
+      this._interceptedUrl = url;
+      return originalOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function (body) {
+      const url = this._interceptedUrl;
+      if (true) {
+        switch (env) {
+          case e.kn:
+          case e.knp:
+            if (
+              url &&
+              typeof url === "string" &&
+              url.startsWith("https://creation.bcmcdn.com/") &&
+              url.endsWith(".bcmkn")
+            ) {
+              log("拦截加密作品", url, this);
+              this.addEventListener("load", async () => {
+                try {
+                  const workObject = JSON.parse(this.responseText);
+                  processResponseText(JSON.stringify(workObject));
+                } catch (_) {
+                  knNewToast("作品数据非JSON，尝试解码", "icn_warn");
+                  const BCMKN_SALT = new Uint8Array(
+                    Array.from({ length: 31 }, (_, i) => i),
+                  );
+                  async function deriveAesKey() {
+                    const hashBuffer = await crypto.subtle.digest(
+                      "SHA-256",
+                      BCMKN_SALT,
+                    );
+                    return crypto.subtle.importKey(
+                      "raw",
+                      hashBuffer,
+                      "AES-GCM",
+                      false,
+                      ["decrypt"],
+                    );
+                  }
+                  // 解密 BCMKN 加密数据
+                  async function decryptBCMKN(encryptedContent) {
+                    const content = encryptedContent.trim();
+                    const reversed = content.split("").reverse().join("");
+                    const fullData = (function (string) {
+                      const binary = Base64.atob(string);
+                      const bytes = new Uint8Array(binary.length);
+                      for (let i = 0; i < binary.length; i++) {
+                        bytes[i] = binary.charCodeAt(i);
+                      }
+                      return bytes;
+                    })(reversed);
+                    if (fullData.length < 13) {
+                      throw new Error(`数据太短 (${fullData.length} 字节)`);
+                    }
+                    const iv = fullData.slice(0, 12);
+                    const ciphertext = fullData.slice(12);
+                    const key = await deriveAesKey();
+                    const decrypted = await crypto.subtle.decrypt(
+                      { name: "AES-GCM", iv },
+                      key,
+                      ciphertext,
+                    );
+                    const text = new TextDecoder().decode(decrypted);
+                    return text.trim();
+                  }
+                  try {
+                    const decryptedJsonText = await decryptBCMKN(
+                      this.responseText,
+                    );
+                    log("Player 解密成功");
+                    processResponseText(decryptedJsonText);
+                    knNewToast("作品数据解码成功", "icn_success");
+                  } catch (e) {
+                    knNewToast("作品数据解码失败", "icn_error");
+                    String(e)
+                      .split("\n")
+                      .forEach((text) => knNewToast(text, "icn_error"));
+                    error("Player 作品数据解码失败", e);
+                  }
+                }
+              });
+            }
+            break;
+        }
+      } else {
+        // 保存
+        if (env === e.k3 || env === e.k4)
+          if (url.startsWith("https://upload.qiniup.com/putb64/-1/")) {
+            if (typeof body === "string")
+              try {
+                const decodedString = Base64.decode(body);
+                let jsonObject = JSON.parse(decodedString);
+                const TARGET_KEYS = ["work_type", "project_name"];
+                if (TARGET_KEYS.some((key) => key in jsonObject)) {
+                  jsonObject = modifyWorkData(jsonObject);
+                  return originalSend.call(
+                    this,
+                    Base64.encode(JSON.stringify(jsonObject)),
+                  );
+                }
+              } catch (e) {
+                error(e);
+              }
+          }
+        if (env === e.kn)
+          if (
+            url === "https://upload.qiniup.com" &&
+            body instanceof FormData &&
+            body.has("file")
+          ) {
+            const file = body.get("file"); // 获取第一个文件
+            if (
+              (file && file.type === "bcmkn") ||
+              file.name.endsWith(".bcmkn")
+            ) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                try {
+                  const oldJson = modifyWorkData(JSON.parse(e.target.result));
+                  const newContent = JSON.stringify(oldJson);
+                  const newFile = new File([newContent], file.name, {
+                    type: file.type || "bcmkn",
+                    lastModified: Date.now(),
+                  });
+                  const newFormData = new FormData();
+                  for (const [key, value] of body.entries()) {
+                    if (key === "file") {
+                      newFormData.append(key, newFile);
+                    } else {
+                      newFormData.append(key, value);
+                    }
+                  }
+                  originalSend.call(this, newFormData);
+                } catch (err) {
+                  error("修改作品数据失败：", err);
+                  originalSend.call(this, body);
+                }
+              };
+              reader.readAsText(file);
+              return; // 阻止本次 send，等待 reader 回调中发送
+            }
+          }
+        // 加载
+        if (url && typeof url === "string")
+          if (
+            url.startsWith("https://creation.bcmcdn.com/") &&
+            (url.endsWith(".bcm") ||
+              url.endsWith(".bcm4") ||
+              url.endsWith(".bcmkn"))
+          ) {
+            log("请求", url, this);
+            this.addEventListener("load", function () {
+              processResponseText(this.responseText);
+            });
+          }
+      }
+      // 默认：直接发送
+      return originalSend.apply(this, arguments);
+    };
+  }
+  // ==================== KittenN Pro ====================
+  async function knPro() {
+    for (const id of Object.keys(webpackReq.m)) {
+      // StageUtils
+      try {
+        const cacheEntry = webpackReq(id);
+        if (cacheEntry.getStageTarget) {
+          kn.stageUtils = {};
+          Object.assign(kn.stageUtils, cacheEntry);
+        }
+      } catch (e) {}
+      if (isPlayer()) {
+      } else {
+        // 弹窗对象
+        try {
+          const cacheEntry = webpackReq(id);
+          if (cacheEntry.DialogApi) {
+            Object.assign(kn, cacheEntry);
+          }
+        } catch (e) {}
+        // 控制台对象
+        try {
+          const cacheEntry = webpackReq(id);
+          // Object.keys(cacheEntry)
+          for (const key of ["x"]) {
+            try {
+              if (cacheEntry[key].instance.addError) {
+                kn.ErrorCollector = cacheEntry[key].instance;
+                // kn.ErrorCollector.addError({
+                //     id: Blockly.mainWorkspace.get_all_blocks()[0],
+                //     type: "warning",
+                //     visible: true,
+                //     color: "",
+                //     entityId: "700824a5-44a8-4d03-a7e8-aa95d87e9b2a",
+                //     entityName: "背景",
+                //     entityUlr: "https://creation.bcmcdn.com/neko/assets/image/img_stage_defult_portrait.png",
+                //     screenId: "700824a5-44a8-4d03-a7e8-aa95d87e9b2a",
+                //     screenName: "屏幕1",
+                //     description: "是的，这是自定义输出",
+                //     blinkErrorTitle: "控制台提示",
+                //     blinkErrorText: '"已执行"',
+                //     currentFrame: {
+                //         proc_id: "__main__",
+                //         proc_call_bid: "",
+                //         proc_parameters: {},
+                //     },
+                // });
+              }
+            } catch (e) {}
+          }
+        } catch (e) {}
+        // 文字解析器
+        try {
+          const cacheEntry = webpackReq(id);
+          if (cacheEntry.BlockParser) {
+            log("?????", id, webpackReq(id));
+            const BlockParser = cacheEntry.BlockParser;
+            cacheEntry.BlockParser = function () {
+              const blockParser = BlockParser.apply(arguments);
+              log("BlockParser", blockParser);
+              return blockParser;
+            };
+            log("ok");
+            Object.assign(kn, cacheEntry);
+          }
+        } catch (e) {
+          log(e);
+        }
+        function hijackFunc(fn, callback) {
+          return function (...args) {
+            const context = this;
+            const getResult = () => fn.apply(context, args);
+            return callback.call(context, args, getResult);
+          };
+        }
+        // 移动端SDK劫持
+        if (!isPC()) {
+          try {
+            const cacheEntry = webpackReq(id);
+            if (cacheEntry.$.sdk) {
+              const sdk = cacheEntry.$.sdk;
+              log("sdk", sdk, id);
+              // 作品加载
+              sdk.network.jsonFetch = hijackFunc(
+                sdk.network.jsonFetch,
+                (args, getr) => {
+                  const r = getr();
+                  const options = args[0];
+                  if (
+                    options &&
+                    typeof options.url === "string" &&
+                    options.url.endsWith(".bcmkn")
+                  )
+                    return new Promise((resolve, reject) => {
+                      r.then((data) => {
+                        log("jsonFetch", options, data);
+                        if (data.body.status === 200)
+                          processResponseText(data.body.body);
+                        resolve(data);
+                      }).catch(reject);
+                    });
+                  return r;
+                },
+              );
+            }
+          } catch (e) {}
+        }
+      }
+    }
+    if (isPlayer()) {
+    } else {
+      (() => {
+        const dtb = Blockly.xml.dom_to_block;
+        Blockly.xml.dom_to_block = function (...args) {
+          const result = dtb.apply(this, args);
+          // log(...args, 'dom to block', result);
+          // result.child_blocks[0].set_colour_by_key(result)
+          return result;
+        };
+      })();
+      // 拦截 Web -> Native
+      (() => {
+        const call = dsBridge.call;
+        dsBridge.call = function () {
+          log("call", ...arguments);
+          if (arguments[0] === "events.on" && arguments[1]) {
+            function deepEqual(obj1, obj2) {
+              if (obj1 === obj2) return true;
+              if (
+                typeof obj1 !== "object" ||
+                obj1 === null ||
+                typeof obj2 !== "object" ||
+                obj2 === null
+              ) {
+                return false;
+              }
+              const keys1 = Object.keys(obj1);
+              const keys2 = Object.keys(obj2);
+              if (keys1.length !== keys2.length) return false;
+              return keys1.every((key) => deepEqual(obj1[key], obj2[key]));
+            }
+            if (
+              deepEqual(arguments[1], {
+                name: "UI",
+                target: { id: "NEKO", type: "TOOL" },
+                value: { button: "EXIT", type: "BUTTON" },
+              })
+            ) {
+              kn.DialogApi.openMessage([
+                {
+                  key: "a",
+                  message: "666",
+                  description: "你点了菜单对吧",
+                },
+              ]);
+            }
+          }
+          const result = call.apply(this, arguments);
+          log("result", result);
+          return result;
+        };
+      })();
+      // 更新检查
+      (async () => {
+        async function checkKnUpdate(version) {
+          const last = storage.get("knVersion") || "0.0.0";
+          if (version !== last) {
+            storage.set("knVersion", version);
+            const dialogContainer = await getElement("#DialogContainer");
+            //prettier-ignore
+            dialogContainer.insertAdjacentHTML("beforeend", `<div class="${SCRIPT_NAME} KittenNVersion_wrapper__Gd3xK enter-done" style="color:rgba(0,0,0,.85);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-size:14px;pointer-events:auto;box-sizing:border-box;background:#fff;border-radius:24px;bottom:0;display:flex;flex-direction:column;left:0;margin:auto;overflow:hidden;position:fixed;right:0;top:0;z-index:var(--z-index-modal);width:400px;height:200px;"><div style="color:var(--T1);cursor:pointer;display:flex;font-size:24px;position:absolute;right:16px;top:16px;width:24px;" class="KittenNVersion_closeButton__h3KtN"><i style="display:inline-block;line-height:0;text-align:center;text-rendering:optimizeLegibility;text-transform:none;vertical-align:-.125em;"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_close"></use></svg></i></div><div class="KittenNVersion_container__ByGXd"><div class="KittenNVersion_right__Ws8k6"><div class="KittenNVersion_rightContent__npwS4"><div class="KittenNVersion_header__rqn-A">KittenN 新版本提醒</div><div class="KittenNVersion_content__6aVfp"><div class="KittenNVersion_contentItem__xZhow"><i class="IconFont_wrapper__FPeRA KittenNVersion_iconWrapper__Adswj"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_point"></use></svg></i><div class="KittenNVersion_textWrapper__9XIWE">当前版本：${version}</div></div><div class="KittenNVersion_contentItem__xZhow"><i class="IconFont_wrapper__FPeRA KittenNVersion_iconWrapper__Adswj"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_point"></use></svg></i><div class="KittenNVersion_textWrapper__9XIWE">上次版本：${last}</div></div></div><div class="KittenNVersion_bottom__rL53H"><a target="_blank" rel="noopener noreferrer" class="KittenNVersion_textWrapper__9XIWE" href="https://github.com/BetterNemo-Team/TanyueKn_OfflinePackage_Getter/issues">探月离线包更新<i class="IconFont_wrapper__FPeRA KittenNVersion_chevronRigth__mDmNl"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><use xlink:href="#icn_version_chevron-right"></use></svg></i></a></div></div></div></div></div><div class="${SCRIPT_NAME} Mask_maskDialogWrapper__xpI4Z"><div class="Mask_maskDialog__YAj4V enter-done"></div></div>`);
+            const dialog = await getElement(
+              `div.${SCRIPT_NAME}.KittenNVersion_wrapper__Gd3xK`,
+            );
+            const closeButton = dialog.querySelector(
+              "div.KittenNVersion_closeButton__h3KtN",
+            );
+            const mask = await getElement(
+              `div.${SCRIPT_NAME}.Mask_maskDialogWrapper__xpI4Z`,
+            );
+            closeButton.addEventListener("click", () => {
+              dialog.remove();
+              mask.remove();
+            });
+          }
+        }
+        for (const id of Object.keys(webpackReq.m)) {
+          try {
+            const cacheEntry = webpackReq(id);
+            if (cacheEntry.i8)
+              if (cacheEntry.i8.startsWith("1.")) {
+                checkKnUpdate(cacheEntry.i8);
+                (async () => {
+                  while (
+                    (await getElement("#init-loading")).style.display !== "none"
+                  )
+                    await new Promise((resolve) =>
+                      requestAnimationFrame(resolve),
+                    );
+                  log("KittenN Version", cacheEntry.i8);
+                  knNewToast(
+                    "当前 KittenN 版本：" + cacheEntry.i8,
+                    "icn_success",
+                    5000,
+                  );
+                })();
+              }
+          } catch (e) {}
+        }
+      })();
+      // 优化 - 强力删除所有积木
+      (async () => {
+        const Blocly = await getBlockly();
+        await getWorkspace();
+        Blockly.mainWorkspace.options.context_menu.workspace.push((ws) => {
+          const cnt = ws.get_all_blocks().length;
+          return {
+            text: `[BKN] 强力删除所有积木 (${cnt} 块)`,
+            name: "delete_all",
+            enabled: true,
+            callback: () => {
+              ws.get_all_blocks().forEach((block) => {
+                try {
+                  if (block.type === "procedures_2_defnoreturn") return;
+                  block.dispose();
+                } catch (e) {}
+              });
+            },
+          };
+        });
+        log("优化 - 强力删除所有积木 选项已添加");
+      })();
+      // 美化 - 猫猫积木
+      (async () => {
+        const catBlockOptions = {
+          facing_the_mouse: true,
+        };
+        let eventBlocks = [];
+        const Blockly = await getBlockly();
+        const blockDefs = {};
+        for (const type of Object.keys(Blockly.Blocks)) {
+          try {
+            const blockDef = getBlockDefine(type);
+            blockDefs[type] = blockDef;
+            if (blockDef.args0.find((arg) => arg.type === "field_icon"))
+              eventBlocks.push(type);
+          } catch (e) {}
+        }
+        function catBlock(event) {
+          let blocks = [];
+          eventBlocks.forEach((type) => {
+            document
+              .querySelectorAll(
+                `#BLINK_WORKSPACE > div.injectionDiv.light > svg.blocklyWsDragSurface > g.blocklyBlockCanvas > g.${type}.blocklyDraggable`,
+              )
+              .forEach((block) => {
+                blocks.push(block);
+              });
+          });
+          blocks.forEach((block) => {
+            if (block.getAttribute("data-cat-hat") == "true") {
+              return;
+            }
+            block.setAttribute("data-cat-hat", "true");
+            const path = block.querySelector("path.blocklyPath");
+            if (!path) return;
+            const fill_color = path.getAttribute("fill");
+            const stroke_color = path.getAttribute("stroke");
+            const cat_bodys = {
+              normal: `<path d="M0,31.1505L96,31.0505C93.4,28.8505,90.5,26.7505,87.5,24.9505C88.5,12.4505,82.2,1.65046,79.1,0.150455C75.4,-1.64955,62.6,13.2505,60.7,15.5505C52.3,14.2505,43.7,14.2505,35.3,15.5505C33.4,13.2505,20.6,-1.64954,16.9,0.150455C13.8,1.65046,7.5,12.4505,8.5,24.9505C5.5,26.8505,2.6,28.8505,0,31.1505Z" fill="${fill_color}" fill-opacity="1" style="mix-blend-mode:passthrough"></path><path d="M87.7428,25.8792Q92.1454,28.5208,96.177,31.9321L96.823,31.1688Q92.8506,27.8076,88.5218,25.1813Q89.1223,16.7813,85.7996,8.73462Q84.4545,5.47695,82.7681,3.11031Q81.1561,0.847955,79.8178,0.20038099999999998Q77.1518,-1.0966,69.3767,6.45427Q64.9379,10.765,60.9956,15.5134Q48.5,13.622,36.0044,15.5134Q32.0621,10.765,27.6233,6.45427Q19.8482,-1.09659,17.1813,0.200839Q15.8439,0.847939,14.2319,3.1103Q12.5455,5.47689,11.2003,8.73462Q7.87622,16.7849,8.47875,25.1892Q3.36954,28.4445,0.168713,31.276L0.831287,32.025Q4.0512999999999995,29.1765,9.26753,25.8729L9.52247,25.7114L9.49841,25.4106Q8.83266,17.0887,12.1247,9.11629Q13.4262,5.96417,15.0463,3.69061Q16.5098,1.63664,17.6187,1.100074Q19.6548,0.10954799999999998,26.9267,7.17165Q31.4282,11.5433,35.4145,16.3689L35.5956,16.588L35.8765,16.5446Q48.5,14.5909,61.1235,16.5446L61.4044,16.588L61.5855,16.3689Q65.5719,11.5433,70.0733,7.17164Q77.3452,0.109545,79.3822,1.100542Q80.4902,1.63665,81.9537,3.69061Q83.5738,5.96424,84.8754,9.11629Q88.1673,17.0889,87.5016,25.4106L87.4769,25.7197L87.7428,25.8792Z" fill-rule="evenodd" fill="${stroke_color}" fill-opacity="1" style="mix-blend-mode:passthrough"></path>`,
+              left: `<g transform="matrix(-1,0,0,1,192.64599609375,0)"><g><path d="M96.322998046875,31.6397578125L192.322998046875,31.5397578125C189.722998046875,29.3397578125,186.822998046875,27.2397578125,183.822998046875,25.4397578125C188.822998046875,21.4892578125,191.922998046875,7.9892578125,188.822998046875,6.4892578125C187.066398046875,5.6346778125,182.01879804687502,7.7442178125,176.152498046875,10.1959878125C169.662498046875,12.9083578125,162.17029804687502,16.0396578125,157.022998046875,16.0397578125C148.622998046875,14.7397578125,140.022998046875,14.7397578125,131.622998046875,16.0397578125C129.722998046875,13.7397578125,116.922998046875,-1.1602821875,113.222998046875,0.6397128125C110.122998046875,2.1397178125,103.822998046875,12.9397578125,104.822998046875,25.4397578125C101.822998046875,27.3397578125,98.922998046875,29.3397578125,96.322998046875,31.6397578125Z" fill="${fill_color}" fill-opacity="1" style="mix-blend-mode:passthrough"/></g><g><path d="M183.565798046875,25.8684578125Q187.968398046875,28.5100578125,191.99999804687502,31.9213578125L192.64599804687498,31.1580578125Q188.82509804687498,27.9249578125,184.674398046875,25.3718578125Q188.071498046875,22.2739578125,189.845598046875,15.1666578125Q190.65739804687502,11.9144578125,190.552198046875,9.5057278125Q190.430198046875,6.7114478125,189.040798046875,6.0391778125Q187.680898046875,5.3776378125,183.87289804687498,6.6276778125Q181.639398046875,7.3608778125,175.959598046875,9.7346578125Q169.235498046875,12.5448578125,165.924498046875,13.6611578125Q160.38429804687502,15.5289578125,157.060998046875,15.5396578125Q144.444198046875,13.5929578125,131.827398046875,15.5026578125Q127.885098046875,10.7542578125,123.446298046875,6.4435278125Q115.67119804687499,-1.1073321875,113.004298046875,0.1900968125Q111.666898046875,0.8371968125,110.054898046875,3.0995578125Q108.368498046875,5.4661478125,107.023298046875,8.7238778125Q103.699218046875,16.7741578125,104.301748046875,25.1784578125Q99.192538046875,28.4337578125,95.991711046875,31.2652578125L96.654285046875,32.0142578125Q99.874298046875,29.1657578125,105.090528046875,25.8621578125L105.345468046875,25.7006578125L105.321408046875,25.3998578125Q104.655658046875,17.0779578125,107.947698046875,9.1055478125Q109.249198046875,5.9534278125,110.869298046875,3.6798678125Q112.332798046875,1.6258978125,113.441698046875,1.0893318125Q115.477798046875,0.09880581249999998,122.749698046875,7.1609078125Q127.251198046875,11.5325578125,131.237498046875,16.3581578125L131.418598046875,16.5772578125L131.699498046875,16.5338578125Q144.322998046875,14.5801578125,156.946498046875,16.5338578125L156.984498046875,16.5397578125L157.022998046875,16.5397578125Q160.516498046875,16.5396578125,166.243998046875,14.6087578125Q169.588498046875,13.4812578125,176.345298046875,10.6573578125Q181.98869804687502,8.298727812500001,184.18479804687502,7.5777978125Q187.607898046875,6.4541278125,188.605198046875,6.9393378125Q189.45719804687502,7.3515678125,189.553198046875,9.5493678125Q189.65209804687498,11.8130578125,188.875398046875,14.9244578125Q187.045098046875,22.2567578125,183.512998046875,25.0473578125L182.945098046875,25.4960578125L183.565798046875,25.8684578125Z" fill-rule="evenodd" fill="${stroke_color}" fill-opacity="1"/></g></g>`,
+              right: `<g><path d="M0.331298828125,31.6397578125L96.331298828125,31.5397578125C93.731298828125,29.3397578125,90.831298828125,27.2397578125,87.831298828125,25.4397578125C92.831298828125,21.4892578125,95.931298828125,7.9892578125,92.831298828125,6.4892578125C91.074698828125,5.6346778125,86.027098828125,7.7442178125,80.160798828125,10.1959878125C73.670798828125,12.9083578125,66.178598828125,16.0396578125,61.031298828125,16.0397578125C52.631298828125,14.7397578125,44.031298828125,14.7397578125,35.631298828125,16.0397578125C33.731298828125,13.7397578125,20.931298828125,-1.1602821875,17.231298828125,0.6397128125C14.131298828125,2.1397178125,7.831298828125,12.9397578125,8.831298828125,25.4397578125C5.831298828125,27.3397578125,2.931298828125,29.3397578125,0.331298828125,31.6397578125Z" fill="${fill_color}" fill-opacity="1" style="mix-blend-mode:passthrough"/></g><g><path d="M87.574098828125,25.8684578125Q91.976698828125,28.5100578125,96.008298828125,31.9213578125L96.654298828125,31.1580578125Q92.833398828125,27.9249578125,88.682698828125,25.3718578125Q92.079798828125,22.2739578125,93.853898828125,15.1666578125Q94.665698828125,11.9144578125,94.560498828125,9.5057278125Q94.438498828125,6.7114478125,93.049098828125,6.0391778125Q91.689198828125,5.3776378125,87.881198828125,6.6276778125Q85.647698828125,7.3608778125,79.967898828125,9.7346578125Q73.243798828125,12.5448578125,69.932798828125,13.6611578125Q64.392598828125,15.5289578125,61.069298828125,15.5396578125Q48.452498828125,13.5929578125,35.835698828125,15.5026578125Q31.893398828125,10.7542578125,27.454598828125,6.4435278125Q19.679498828125,-1.1073321875,17.012598828125,0.1900968125Q15.675198828125,0.8371968125,14.063198828125,3.0995578125Q12.376798828125,5.4661478125,11.031598828125,8.7238778125Q7.707518828125,16.7741578125,8.310048828125,25.1784578125Q3.200838828125,28.4337578125,0.000011828125000001855,31.2652578125L0.662585828125,32.0142578125Q3.882598828125,29.1657578125,9.098828828125,25.8621578125L9.353768828125,25.7006578125L9.329708828125,25.3998578125Q8.663958828125,17.0779578125,11.955998828125,9.1055478125Q13.257498828125,5.9534278125,14.877598828125,3.6798678125Q16.341098828125,1.6258978125,17.449998828125,1.0893318125Q19.486098828125,0.09880581249999998,26.757998828125,7.1609078125Q31.259498828125,11.5325578125,35.245798828125,16.3581578125L35.426898828125,16.5772578125L35.707798828125,16.5338578125Q48.331298828125,14.5801578125,60.954798828125,16.5338578125L60.992798828125,16.5397578125L61.031298828125,16.5397578125Q64.524798828125,16.5396578125,70.252298828125,14.6087578125Q73.596798828125,13.4812578125,80.353598828125,10.6573578125Q85.996998828125,8.298727812500001,88.193098828125,7.5777978125Q91.616198828125,6.4541278125,92.613498828125,6.9393378125Q93.465498828125,7.3515678125,93.561498828125,9.5493678125Q93.660398828125,11.8130578125,92.883698828125,14.9244578125Q91.053398828125,22.2567578125,87.521298828125,25.0473578125L86.953398828125,25.4960578125L87.574098828125,25.8684578125Z" fill-rule="evenodd" fill="${stroke_color}" fill-opacity="1"/></g>`,
+            };
+            const cat_hat_html = `<g style="transform: translate(15px, -30px);" class="cat_hat"><g class="cat_hat_body">${cat_bodys["normal"]}</g><g fill="#000000" style="transform: translate(6.1845px, 32.3896px);" class="cat_hat_eyes"><path d="M25.2-1.1c0.1,0,0.2,0,0.2,0l8.3-2.1l-7-4.8c-0.5-0.3-1.1-0.2-1.4,0.3s-0.2,1.1,0.3,1.4L29-4.1l-4,1c-0.5,0.1-0.9,0.7-0.7,1.2C24.3-1.4,24.7-1.1,25.2-1.1z" fill-opacity="0" class="cat_hat_left_eye2"></path><path d="M62.4-1.1c-0.1,0-0.2,0-0.2,0l-8.3-2.1l7-4.8c0.5-0.3,1.1-0.2,1.4,0.3s0.2,1.1-0.3,1.4l-3.4,2.3l4,1c0.5,0.1,0.9,0.7,0.7,1.2C63.2-1.4,62.8-1.1,62.4-1.1z" fill-opacity="0" class="cat_hat_right_eye2"></path><circle cx="59.2" cy="-3.3" r="3.4" fill-opacity="0.6" class="cat_hat_right_eye1"></circle><circle cx="29.1" cy="-3.3" r="3.4" fill-opacity="0.6" class="cat_hat_left_eye1"></circle><path d="M45.6,0.1c-0.9,0-1.7-0.3-2.3-0.9c-0.6,0.6-1.3,0.9-2.2,0.9c-0.9,0-1.8-0.3-2.3-0.9c-1-1.1-1.1-2.6-1.1-2.8c0-0.5,0.5-1,1-1l0,0c0.6,0,1,0.5,1,1c0,0.4,0.1,1.7,1.4,1.7c0.5,0,0.7-0.2,0.8-0.3c0.3-0.3,0.4-1,0.4-1.3c0-0.1,0-0.1,0-0.2c0-0.5,0.5-1,1-1l0,0c0.5,0,1,0.4,1,1c0,0,0,0.1,0,0.2c0,0.3,0.1,0.9,0.4,1.2C44.8-2.2,45-2,45.5-2s0.7-0.2,0.8-0.3c0.3-0.4,0.4-1.1,0.3-1.3c0-0.5,0.4-1,0.9-1.1c0.5,0,1,0.4,1.1,0.9c0,0.2,0.1,1.8-0.8,2.8C47.5-0.4,46.8,0.1,45.6,0.1z" fill-opacity="0.6"></path></g><path d="M73.1-15.6c1.7-4.2,4.5-9.1,5.8-8.5c1.6,0.8,5.4,7.9,5,15.4c0,0.6-0.7,0.7-1.1,0.5c-3-1.6-6.4-2.8-8.6-3.6C72.8-12.3,72.4-13.7,73.1-15.6z" fill="#FFD5E6" fill-opacity="" style="transform: translate(-2px, 34px);" class="cat_hat_right_ear"></path><path d="M22.4-15.6c-1.7-4.2-4.5-9.1-5.8-8.5c-1.6,0.8-5.4,7.9-5,15.4c0,0.6,0.7,0.7,1.1,0.5c3-1.6,6.4-2.8,8.6-3.6C22.8-12.3,23.2-13.7,22.4-15.6z" fill="#FFD5E6" fill-opacity="" style="transform: translate(4px, 34px);" class="cat_hat_left_ear"></path></g>`;
+            path.insertAdjacentHTML("afterend", cat_hat_html);
+            const cat_hat = block.querySelector("g.cat_hat");
+            if (!cat_hat) return;
+            const left_eye1 = cat_hat.querySelector(".cat_hat_left_eye1");
+            const left_eye2 = cat_hat.querySelector(".cat_hat_left_eye2");
+            const right_eye1 = cat_hat.querySelector(".cat_hat_right_eye1");
+            const right_eye2 = cat_hat.querySelector(".cat_hat_right_eye2");
+            if (!left_eye1 || !right_eye1 || !left_eye2 || !right_eye2) return;
+            function wink(type1, type2) {
+              type1.style.fillOpacity = "0";
+              type2.style.fillOpacity = "0.6";
+              setTimeout(() => {
+                type1.style.fillOpacity = "0.6";
+                type2.style.fillOpacity = "0";
+              }, 100);
+            }
+            left_eye1.onmouseover = () => wink(left_eye1, left_eye2);
+            right_eye1.onmouseover = () => wink(right_eye1, right_eye2);
+            const cat_body = cat_hat.querySelector(".cat_hat_body");
+            const left_ear = cat_hat.querySelector(".cat_hat_left_ear");
+            const right_ear = cat_hat.querySelector(".cat_hat_right_ear");
+            if (!left_ear || !right_ear) return;
+            function toggle(type, ear) {
+              if (!cat_body) return;
+              ear.style.fillOpacity = "0";
+              cat_body.innerHTML = cat_bodys[type];
+              setTimeout(() => {
+                cat_body.innerHTML = cat_bodys["normal"];
+                ear.style.fillOpacity = "1";
+              }, 80);
+            }
+            left_ear.onmouseover = () => {
+              toggle("left", left_ear);
+              wink(left_eye1, left_eye2);
+              wink(right_eye1, right_eye2);
+            };
+            right_ear.onmouseover = () => {
+              toggle("right", right_ear);
+              wink(left_eye1, left_eye2);
+              wink(right_eye1, right_eye2);
+            };
+          });
+          document
+            .querySelectorAll("g.cat_hat > g.cat_hat_eyes")
+            .forEach((cat) => {
+              try {
+                if (!catBlockOptions["facing_the_mouse"]) return;
+                let catX = cat.getBoundingClientRect().x;
+                let catY = cat.getBoundingClientRect().y;
+                let x = event.clientX || catX;
+                let y = event.clientY || catY;
+                cat.style.transform = `translate(${(x - catX) / 100 + 4}px, ${(y - catY) / 100 + 32}px)`;
+              } catch (e) {}
+            });
+          window["catBlock"] = catBlock;
+        }
+        function enableCatBlock() {
+          catBlock({});
+          document.addEventListener("mousemove", catBlock);
+        }
+        function disableCatBlock() {
+          document.removeEventListener("mousemove", catBlock);
+          document.querySelectorAll("g.cat_hat").forEach((cat) => {
+            if (!cat.parentElement) return;
+            cat.parentElement.setAttribute("data-cat-hat", "false");
+            cat.remove();
+          });
+        }
+        enableCatBlock();
+      })();
+      // 工具 - 快速添加积木
+      (async () => {
+        const Blockly = await getBlockly();
+        const workspace = await getWorkspace();
+        const target = workspace.get_canvas().parentNode;
+        let floatingList = null;
+        function screenToWorkspace(screenX, screenY, workspace) {
+          const svgRect = workspace.get_parent_svg().getBoundingClientRect();
+          const canvasX = screenX - svgRect.left;
+          const canvasY = screenY - svgRect.top;
+          const scale = workspace.scale;
+          return {
+            x: canvasX / scale - workspace.scroll_xy[0],
+            y: canvasY / scale - workspace.scroll_xy[1],
+          };
+        }
+        async function showFloatingSearch(clientX, clientY) {
+          if (floatingList) {
+            floatingList.remove();
+            floatingList = null;
+          }
+          const container = document.createElement("div");
+          container.className = "floating-block-search";
+          Object.assign(container.style, {
+            position: "fixed",
+            left: clientX + "px",
+            top: clientY + "px",
+            zIndex: "10000",
+            background: "white",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            width: "220px",
+            fontFamily: "sans-serif",
+            fontSize: "14px",
+            overflow: "hidden",
+          });
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "搜索积木块...";
+          Object.assign(input.style, {
+            width: "100%",
+            boxSizing: "border-box",
+            border: "none",
+            outline: "none",
+            padding: "8px 12px",
+            fontSize: "inherit",
+            borderBottom: "1px solid #eee",
+          });
+          container.appendChild(input);
+
+          // 搜索结果列表
+          const list = document.createElement("ul");
+          Object.assign(list.style, {
+            listStyle: "none",
+            margin: "0",
+            padding: "4px 0",
+            maxHeight: "200px",
+            overflowY: "auto",
+          });
+          container.appendChild(list);
+
+          // 当前高亮索引
+          let highlightedIndex = -1;
+
+          // 渲染列表项
+          async function renderList(filterText = "") {
+            list.innerHTML = "";
+            const lowerFilter = filterText.toLowerCase();
+            const filtered = Object.keys(Blockly.Blocks)
+              .map((type) => {
+                const block = getBlockDefine(type);
+                let label = block.message0;
+                if (label.startsWith("%{BKY_")) {
+                  label = label.slice(6, block.message0.length - 1);
+                  label = Blockly.Msg[label] || label;
+                }
+                return {
+                  label,
+                  type,
+                };
+              })
+              .filter(
+                (b) =>
+                  b.label.toLowerCase().includes(lowerFilter) ||
+                  b.type.toLowerCase().includes(lowerFilter),
+              );
+
+            if (filtered.length === 0) {
+              const empty = document.createElement("li");
+              empty.textContent = "无匹配积木";
+              Object.assign(empty.style, {
+                padding: "8px 12px",
+                color: "#999",
+                fontStyle: "italic",
+              });
+              list.appendChild(empty);
+              highlightedIndex = -1;
+              return;
+            }
+
+            filtered.forEach((block, idx) => {
+              const li = document.createElement("li");
+              li.textContent = block.label;
+              li.dataset.type = block.type;
+              li.dataset.index = idx;
+              Object.assign(li.style, {
+                padding: "6px 12px",
+                cursor: "pointer",
+                transition: "background 0.1s",
+                background:
+                  idx === highlightedIndex ? "#e0f0ff" : "transparent",
+              });
+              li.addEventListener("mouseenter", () => {
+                highlightedIndex = idx;
+                updateHighlight();
+              });
+              li.addEventListener("mousedown", (e) => {
+                e.preventDefault(); // 防止输入框失去焦点
+                selectBlock(block.type);
+              });
+              list.appendChild(li);
+            });
+          }
+
+          // 更新高亮
+          function updateHighlight() {
+            const items = list.querySelectorAll("li[data-type]");
+            items.forEach((li, idx) => {
+              li.style.background =
+                idx === highlightedIndex ? "#e0f0ff" : "transparent";
+            });
+            // 滚动到可见
+            const active = list.querySelector(
+              `li[data-index="${highlightedIndex}"]`,
+            );
+            if (active) {
+              active.scrollIntoView({ block: "nearest" });
+            }
+          }
+
+          // 选中某个块，生成并关闭悬浮框
+          function selectBlock(type) {
+            // 生成块的工作区坐标（使用弹出时的屏幕坐标）
+            const pos = screenToWorkspace(
+              parseInt(container.style.left),
+              parseInt(container.style.top),
+              workspace,
+            );
+            const block = workspace.new_block(type);
+            block.init_svg();
+            block.move_by([pos.x, pos.y]);
+            block.render();
+            // 关闭悬浮框
+            container.remove();
+            floatingList = null;
+          }
+
+          // 输入过滤
+          input.addEventListener("input", async () => {
+            highlightedIndex = 0; // 重新搜索时高亮第一个
+            await renderList(input.value);
+          });
+
+          // 键盘事件
+          container.addEventListener("keydown", (e) => {
+            const items = list.querySelectorAll("li[data-type]");
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              if (items.length > 0) {
+                highlightedIndex = Math.min(
+                  highlightedIndex + 1,
+                  items.length - 1,
+                );
+                updateHighlight();
+              }
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              if (items.length > 0) {
+                highlightedIndex = Math.max(highlightedIndex - 1, 0);
+                updateHighlight();
+              }
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              if (highlightedIndex >= 0 && items.length > 0) {
+                const type = items[highlightedIndex].dataset.type;
+                selectBlock(type);
+              }
+            } else if (e.key === "Escape") {
+              container.remove();
+              floatingList = null;
+            }
+          });
+
+          // 点击容器外部关闭（延迟处理，避免与创建时的 click 冲突）
+          const closeHandler = (e) => {
+            if (!container.contains(e.target)) {
+              container.remove();
+              floatingList = null;
+              document.removeEventListener("mousedown", closeHandler);
+            }
+          };
+          // 延迟绑定，避免当前 shift+click 的 mouseup 立即触发关闭
+          setTimeout(() => {
+            document.addEventListener("mousedown", closeHandler);
+          }, 0);
+
+          // 挂载到 body
+          document.body.appendChild(container);
+          floatingList = container;
+
+          // 初始渲染（全部显示）
+          await renderList("");
+          // 自动聚焦输入框
+          input.focus();
+        }
+
+        // 绑定 shift+click 事件
+        target.addEventListener("click", function (event) {
+          if (event.shiftKey) {
+            // 阻止默认行为（避免 Blockly 自身也可能处理 click）
+            event.preventDefault();
+            event.stopPropagation();
+            console.log("Shift + 点击触发悬浮搜索");
+            showFloatingSearch(event.clientX, event.clientY);
+          }
+        });
+      })();
+    }
+  }
+  async function betterNemo() {
+    BN_CUEL_BRIDGE.CUE_EXTS = exts;
+    BN_CUEL_BRIDGE.installExt = installExt;
+    function installAll() {
+      const extData = BN_CUEL_BRIDGE.WORK_EXT_DATA[extDataKey];
+      if (!extData) return;
+      Object.keys(extData).forEach((key) => {
+        log("安装扩展", extData[key].title);
+        installExt(extData[key]._sourceCode, true, key);
+      });
+    }
+    if (BN_CUEL_BRIDGE.WORK_EXT_DATA === null)
+      BN_CUEL_BRIDGE.on("workExtDataLoaded", installAll);
+    else installAll();
+  }
+  // ==================== 修复问题 ====================
+  async function fixBug() {
+    if (env === e.kn) {
+      // 修复下拉框显示错误
+      addStyle(
+        `g.blocklyEditable.blocklyFieldDropdown > rect {stroke-width: 1;fill: rgb(255, 255, 255);fill-opacity: 0.1;stroke: rgb(0, 0, 0);stroke-opacity: 0.1;}`,
+      );
+    }
+    if ([e.k3, e.k4].includes(env)) {
+      addStyle(`
+                .${SCRIPT_NAME}_extLabel text, #workspace > div > svg.blocklyFlyout > g > g.blocklyBlockCanvas > g.blocklyFlyoutButton > text {
+                    fill: #8793b3;
+                    height: 12px;
+                    font-weight: 500;
+                    line-height: 12px;
+                    white-space: nowrap;
+                }
+                
+            `);
+    }
+    if (env === e.k4) {
+      // 修复下拉框高度为0
+      (async () => {
+        // 选择需要观察变动的节点
+        const targetNode = await getElement("div.blocklyWidgetDiv");
+        const config = { attributes: true, childList: false, subtree: false };
+        const callback = function (mutationsList, observer) {
+          for (let mutation of mutationsList) {
+            if (targetNode.style.height === "0px") {
+              targetNode.style.height = "";
+            }
+          }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+      })();
+    }
+  }
+
+  window._t = {
+    getBlockDefine: getBlockDefine,
+    newBlock: (blockId) => {
+      const newBlock = Blockly.mainWorkspace.new_block(blockId);
+      (newBlock.init_svg(), newBlock.render());
+    },
+  };
+
+  // ==================== 主函数 ====================
+
+  /**
+   * 主入口函数
+   * 按顺序获取依赖、安装示例扩展、启动工具箱刷新
+   */
+  async function main() {
+    if (env !== e.bn) {
+      log("获取 webpack require...");
+      // 获取 webpack require
+      if (!webpackReq && !(await getWebpackReq())) {
+        error("无法获取 webpack require");
+        return;
+      }
+    }
+    if ([e.kn, e.knp].includes(env)) knPro();
+
+    log("获取 heart...");
+
+    // 获取 heart 核心对象
+    while (!heart && !(await getHeart())) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+    log("成功获取 heart", heart);
+    // 暴露 heart 到全局
+    window.heart = heart;
+
+    heart.event_bus.error.all.immediate.sub((e) => {
+      // knNewToast(e.error.stack, "icn_error");
+      error(e.error.stack);
+    });
+
+    if (env === e.bn) betterNemo();
+
+    async () => {
+      const getCreateFunc = () =>
+        heart?.runtime_manager?.run_mgr?.interpreter_factory?.create;
+      while (!getCreateFunc())
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      const createInterpreter = getCreateFunc();
+      heart.runtime_manager.run_mgr.interpreter_factory.create = function (
+        t,
+        e,
+        i,
+        o,
+        r,
+        n,
+        a,
+        _,
+        c,
+      ) {
+        const interpreter = createInterpreter.apply(this, [
+          t,
+          e,
+          i,
+          o,
+          r,
+          n,
+          a,
+          _,
+          c,
+        ]);
+        const optiCompiler = this.program_cache.opti_compiler;
+        const getStepArgs = interpreter.get_step_args;
+        interpreter.get_step_args = function () {
+          const args = getStepArgs.apply(this, arguments);
+          this.__step_args = args;
+          // log(arguments, "step args", args);
+          return args;
+        };
+        const compileStatement = optiCompiler.compile_statement;
+        optiCompiler.compile_statement = function (ast) {
+          if (!ast) return { statements: "" };
+          if (
+            ast.type === "ext_MY_EXTENSION_c_test" &&
+            typeof ast.child_block === "object" &&
+            ast.child_block[0]
+          ) {
+            const childBlockCode = this.compile_statement(
+              ast.child_block[0],
+            ).statements.flat(Infinity)[1];
+            const stepArgs = interpreter.__step_args;
+            const func = () => {
+              new Function("X", childBlockCode)(stepArgs);
+            };
+            window.__cue_func = { a: func };
+            return {
+              statements: [`window.__cue_func.a();`],
+            };
+          }
+          const code = compileStatement.apply(this, [ast]);
+          return code;
+        };
+        // log("interpreter", interpreter, optiCompiler);
+        return interpreter;
+      };
+    };
+
+    (async () => {
+      while (!heart.runtime_manager.run_mgr.send_action)
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      const sa = heart.runtime_manager.run_mgr.send_action;
+      heart.runtime_manager.run_mgr.send_action = function () {
+        const result = sa.apply(this, arguments);
+        log(...arguments, "sa", result);
+        return result;
+      };
+    })();
+
+    fixBug();
+    hijackXhrReq();
+
+    if (!isPlayer()) {
+      if (env !== e.bn) {
+        addExtImportBtn();
+      }
+      // 初次加载工具箱
+      await reloadToolbox();
+      // 定时刷新工具箱
+      setInterval(() => reloadToolbox(), 2000);
+    }
+    async function testExtension(file) {
+      installExt(
+        await (await fetch("http://192.168.1.12:8080/" + file)).text(),
+        false,
+        file,
+      );
+    }
+    if (
+      window.__DEBUG__ &&
+      !isPlayer() &&
+      !new URLSearchParams(location.search).has("workId")
+    ) {
+      // testExtension('MY_EXTENSION.cue.js');
+      // testExtension('源码云空间.cue.js');
+      // testExtension("other/调试.cue.js");
+      // testExtension("other/柠支付.cue.js");
+    }
+    const SCRIPT_UPDATE_DESC = [
+      "# 2026.8.28",
+      "更新 [CUEP] 扩展安装提示",
+      "修复 获取 Webpack Require 时 chunk 冲突",
+      "# 2026.8.27",
+      "更新 [KNP] 积木快速搜索",
+      "更新 脚本更新提示",
+      "修复 [CUEP] 图标异常",
+      "# 2026.8.24",
+      "修复 [CUEP] 扩展无法获取画笔对象",
+      "新增 脚本更新提示",
+    ]
+      .map((text) => {
+        let dot = `<i style="font-size:24px;margin-right:10px;line-height: 0;"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" viewBox="0 0 1024 1024"><path d="M512 512m-213.333333 0a213.333333 213.333333 0 1 0 426.666666 0 213.333333 213.333333 0 1 0-426.666666 0Z" fill="#D9D9D9" p-id="10239"></path></svg></i>`;
+        let tag = text.split(" ")[0];
+        if (tag === "#") ((text = text.slice(2)), (dot = ""));
+        const color = {
+          新增: "green",
+          更新: "dodgerblue",
+          修复: "orange",
+        };
+        if (Object.keys(color).includes(tag))
+          ((text = text.slice(tag.length)),
+            (tag = `<div style="color: #FFF;font-size: 14px;line-height:24px;background-color: ${color[tag]};border-radius: 10px;padding-left: 8px;padding-right: 8px;margin-right: 5px;">${tag}</div>`));
+        else tag = "";
+        return `<div style="display:flex;margin-top: 10px;">${dot}${tag}
+            <div class="KittenNVersion_textWrapper__9XIWE" style="color:#000;font-size:16px;font-style:normal;font-weight:400;line-height:24px;">
+            ${text}</div></div>`;
+      })
+      .join("");
+    (async () => {
+      if (storage.get("UPDATE_DESC") !== SCRIPT_UPDATE_DESC) {
+        storage.set("UPDATE_DESC", SCRIPT_UPDATE_DESC);
+        const root = await getElement("#root");
+        root.insertAdjacentHTML(
+          "beforeend",
+          `<div class="${SCRIPT_NAME}UpdateDialog" style="color:rgba(0,0,0,.85);font-size:14px;background:#fff;border-radius:24px;bottom:0;display:flex;flex-direction:column;left:0;margin:auto;overflow:hidden;position:fixed;right:0;top:0;z-index:calc(var(--z-index-modal) + 10);width:70vw;height: 450px;min-width:300px">
+                        <div class="closeBtn" style="color:var(--T1);cursor:pointer;display:flex;font-size:24px;position:absolute;right:16px;top:16px;width:24px;"><i class="IconFont_wrapper__FPeRA"><svg width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" viewBox="0 0 1024 1024"><path d="M270.378667 210.048l241.365333 241.322667 241.365333-241.322667a42.666667 42.666667 0 1 1 60.330667 60.330667l-241.322667 241.365333 241.322667 241.365333a42.666667 42.666667 0 1 1-60.330667 60.330667l-241.365333-241.322667-241.365333 241.322667a42.666667 42.666667 0 0 1-60.330667-60.330667l241.322667-241.365333-241.322667-241.365333a42.666667 42.666667 0 0 1 60.330667-60.330667z"></path></svg></i></div>
+                        <div style="display:flex;flex-direction: row;overflow:hidden;">
+                            <div style="display: flex;flex-direction: column;justify-content: flex-start;width: 448px;margin: 24px;">
+                                <div style="color:#000;font-size:20px;letter-spacing:2px;margin-bottom:16px;">CUE Loader 已更新！</div>
+                                <div style="overflow: scroll">${SCRIPT_UPDATE_DESC}</div>
+                            </div>
+                        </div>
+                    </div>`,
+        );
+      }
+    })();
+  }
+    // ==================== 启动逻辑 ====================
+
+    // 根据文档加载状态决定执行时机
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        main().catch(error);
+      });
+    } else {
+      main().catch(error);
+    }
+})();
+
   function argonSorter(a, b) {
     const na = Number(a);
     const nb = Number(b);
