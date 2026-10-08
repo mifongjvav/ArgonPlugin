@@ -31,6 +31,7 @@ git clone https://github.com/mifongjvav/ArgonPlugin.git
 - 基于复制列表的排序（使用 `复制 [同一个列表] 到 [同一个列表]` 触发）
 - 基于复制列表的快速插入n个列表项（使用 `复制 (数值) 到 [任意列表]` 触发）
 - 基于数学运算的eval（在数学运算积木中像JS那样调用eval即可，如果返回值为字符串，将返回1）
+- 内置CUE插件支持，使用定制版CUELite
 
 ## 许可证
 
